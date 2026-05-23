@@ -16,12 +16,6 @@ const sidebarItems = [
   { id: 'configuracion', label: 'Configuración', icon: Settings },
 ];
 
-const _statusStyles: Record<string, { label: string; color: string; bg: string }> = {
-  activo: { label: 'Activo', color: '#22C55E', bg: 'rgba(34, 197, 94, 0.1)' },
-  pausado: { label: 'Pausado', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)' },
-  agotado: { label: 'Agotado', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.1)' },
-};
-
 export default function BusinessPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [productos, setProductos] = useState<Product[]>([]);
