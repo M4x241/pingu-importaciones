@@ -121,7 +121,7 @@ html {
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: #F0F7F9;
+  background: #0F172A;
   color: #0F172A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -146,7 +146,7 @@ body {
 
 /* ===== Gradient Text ===== */
 .gradient-text {
-  background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #F59E0B 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 50%, #F59E0B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# React (Frontend)
+build/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# NestJS (Backend)
+dist/
+/coverage
+
+# Variables de entorno generales
+.env
+
+# Archivos de SO y Editores
+.DS_Store
+.vscode/
+.idea/
