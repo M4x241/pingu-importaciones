@@ -25,7 +25,7 @@ const Navbar = () => {
     { label: "Contacto", to: "/#contacto" },
   ];
 
-  const isActive = (to) => {
+  const isActive = (to: string) => {
     if (to === "/") return location.pathname === "/";
     return location.pathname.startsWith(to);
   };
