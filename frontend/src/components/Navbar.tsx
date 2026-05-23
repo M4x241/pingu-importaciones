@@ -33,7 +33,7 @@ const Navbar = () => {
   return (
     <nav
       id="main-nav"
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 !p-4"
       style={{
         backgroundColor: isScrolled
           ? "rgba(15, 23, 42, 0.95)"
@@ -55,7 +55,7 @@ const Navbar = () => {
             <li key={link.to}>
               <Link
                 to={link.to}
-                className="font-medium text-sm tracking-wide transition-colors duration-300 hover:text-amber"
+                className="font-medium text-lg tracking-wide transition-colors duration-300 hover:text-amber"
                 style={{
                   color: isActive(link.to)
                     ? "#F59E0B"
@@ -71,7 +71,7 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-4">
           <Link
             to="/tienda"
-            className="flex items-center gap-2 text-sm font-medium transition-colors duration-300 hover:text-amber"
+            className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-amber"
             style={{ color: "rgba(203, 213, 225, 0.8)" }}
           >
             <ShoppingCart className="w-4 h-4" />
@@ -79,7 +79,7 @@ const Navbar = () => {
           </Link>
           <Link
             to="/login"
-            className="flex items-center gap-2 text-sm font-medium transition-colors duration-300 hover:text-amber px-4 py-2 rounded-full"
+            className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-amber !px-4 !py-2 rounded-full"
             style={{
               background: "rgba(255, 255, 255, 0.06)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -91,7 +91,7 @@ const Navbar = () => {
           </Link>
           <Link
             to="/tienda"
-            className="inline-flex items-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-semibold px-6 py-2.5 rounded-full transition-all duration-300 hover:scale-105 text-sm"
+            className="inline-flex items-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-semibold !px-6 !py-2.5 rounded-full transition-all duration-300 hover:scale-105 text-lg group shadow-2xl"
             style={{ boxShadow: "0 4px 15px rgba(245, 158, 11, 0.3)" }}
           >
             <Package className="w-4 h-4" />
@@ -154,7 +154,12 @@ const Navbar = () => {
           </Link>
           <Link
             to="/tienda"
-            className="block text-center bg-amber hover:bg-amber-dark text-oxford font-semibold px-6 py-3 rounded-full transition-all duration-300"
+            className="block text-center font-semibold px-6 py-3 rounded-full transition-all duration-300 mt-4"
+            style={{
+              background: "rgba(245, 158, 11, 0.1)",
+              border: "1px solid rgba(245, 158, 11, 0.2)",
+              color: "#F59E0B",
+            }}
           >
             Comprar Ahora
           </Link>
