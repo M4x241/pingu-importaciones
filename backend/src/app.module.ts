@@ -4,7 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {
-  Role, User, Empresa, Catalogo, Producto, Reservacion, DetalleReservacion,
+  Role,
+  User,
+  Empresa,
+  Catalogo,
+  Producto,
+  Reservacion,
+  DetalleReservacion,
 } from './entities';
 import { RolesModule } from './modules/roles/roles.module';
 import { UsersModule } from './modules/users/users.module';
@@ -23,16 +29,21 @@ import { PayPalModule } from './modules/paypal/paypal.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: 'mysql',
-        host: config.get('DB_HOST', 'localhost'),
-        port: config.get('DB_PORT', 3306),
-        username: config.get('DB_USER', 'root'),
-        password: config.get('DB_PASSWORD', ''),
-        database: config.get('DB_NAME', 'ecommerce_importaciones'),
+        type: 'postgres',
+        url: config.get('DATABASE_URL'),
         entities: [
-          Role, User, Empresa, Catalogo, Producto, Reservacion, DetalleReservacion,
+          Role,
+          User,
+          Empresa,
+          Catalogo,
+          Producto,
+          Reservacion,
+          DetalleReservacion,
         ],
         synchronize: config.get('NODE_ENV') !== 'production',
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
     }),
     RolesModule,

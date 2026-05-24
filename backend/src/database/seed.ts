@@ -16,8 +16,6 @@ function hashPassword(password: string): string {
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
-
-  // 1. Inicializar los repositorios primero
   const roleRepo = app.get(getRepositoryToken(Role));
   const userRepo = app.get(getRepositoryToken(User));
   const empresaRepo = app.get(getRepositoryToken(Empresa));
@@ -28,20 +26,29 @@ async function bootstrap() {
 
   console.log('   Limpiando tablas existentes...');
 
-  // 2. Desactivar restricciones de llaves foráneas en MySQL
-  await roleRepo.query('SET FOREIGN_KEY_CHECKS = 0;');
-
-  // 3. Vaciar las tablas en orden
-  await detalleRepo.clear();
-  await reservacionRepo.clear();
-  await productoRepo.clear();
-  await catalogoRepo.clear();
-  await empresaRepo.clear();
-  await userRepo.clear();
-  await roleRepo.clear();
-
-  // 4. Volver a activar las restricciones de llaves foráneas
-  await roleRepo.query('SET FOREIGN_KEY_CHECKS = 1;');
+  // 2. Vaciar las tablas usando TRUNCATE CASCADE para PostgreSQL
+  // Obtenemos el nombre exacto de la tabla desde la metadata de TypeORM
+  await detalleRepo.query(
+    `TRUNCATE TABLE "${detalleRepo.metadata.tableName}" CASCADE;`,
+  );
+  await reservacionRepo.query(
+    `TRUNCATE TABLE "${reservacionRepo.metadata.tableName}" CASCADE;`,
+  );
+  await productoRepo.query(
+    `TRUNCATE TABLE "${productoRepo.metadata.tableName}" CASCADE;`,
+  );
+  await catalogoRepo.query(
+    `TRUNCATE TABLE "${catalogoRepo.metadata.tableName}" CASCADE;`,
+  );
+  await empresaRepo.query(
+    `TRUNCATE TABLE "${empresaRepo.metadata.tableName}" CASCADE;`,
+  );
+  await userRepo.query(
+    `TRUNCATE TABLE "${userRepo.metadata.tableName}" CASCADE;`,
+  );
+  await roleRepo.query(
+    `TRUNCATE TABLE "${roleRepo.metadata.tableName}" CASCADE;`,
+  );
 
   console.log('   Insertando datos de prueba...');
 
@@ -141,13 +148,15 @@ async function bootstrap() {
   const productos = await productoRepo.save([
     {
       nombre: 'Audífonos Bluetooth Pro',
-      descripcion: 'Cancelación de ruido activa, 30h de batería, sonido envolvente premium.',
+      descripcion:
+        'Cancelación de ruido activa, 30h de batería, sonido envolvente premium.',
       precio: 89.99,
       cantidad_minima: 10,
       cantidad_maxima: 100,
       categoria: 'Tecnología',
       cant_pedida: 7,
-      imagen_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
       catalogo_id: catalogos[0].id,
     },
     {
@@ -158,7 +167,8 @@ async function bootstrap() {
       cantidad_maxima: 50,
       categoria: 'Tecnología',
       cant_pedida: 3,
-      imagen_url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
       catalogo_id: catalogos[0].id,
     },
     {
@@ -169,40 +179,47 @@ async function bootstrap() {
       cantidad_maxima: 20,
       categoria: 'Tecnología',
       cant_pedida: 3,
-      imagen_url: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=300&fit=crop',
       catalogo_id: catalogos[0].id,
     },
     {
       nombre: 'Tablet 10.5" HD',
-      descripcion: 'Pantalla retina, 256GB, chip ultrarrápido, lápiz táctil incluido.',
+      descripcion:
+        'Pantalla retina, 256GB, chip ultrarrápido, lápiz táctil incluido.',
       precio: 329.99,
       cantidad_minima: 5,
       cantidad_maxima: 30,
       categoria: 'Hogar',
       cant_pedida: 5,
-      imagen_url: 'https://images.unsplash.com/photo-1546868871-af0de0ae72da?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1546868871-af0de0ae72da?w=400&h=300&fit=crop',
       catalogo_id: catalogos[0].id,
     },
     {
       nombre: 'Parlante Portátil Stereo',
-      descripcion: 'Bluetooth 5.3, 20W, resistente al agua IPX7, 12h reproducción.',
+      descripcion:
+        'Bluetooth 5.3, 20W, resistente al agua IPX7, 12h reproducción.',
       precio: 59.99,
       cantidad_minima: 15,
       cantidad_maxima: 100,
       categoria: 'Tecnología',
       cant_pedida: 8,
-      imagen_url: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop',
       catalogo_id: catalogos[1].id,
     },
     {
       nombre: 'Audífonos Deportivos Inalámbricos',
-      descripcion: 'Resistentes al sudor, ajuste seguro, 8h batería, graves potentes.',
+      descripcion:
+        'Resistentes al sudor, ajuste seguro, 8h batería, graves potentes.',
       precio: 49.99,
       cantidad_minima: 20,
       cantidad_maxima: 200,
       categoria: 'Deportes',
       cant_pedida: 14,
-      imagen_url: 'https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=400&h=300&fit=crop',
       catalogo_id: catalogos[1].id,
     },
     {
@@ -213,7 +230,8 @@ async function bootstrap() {
       cantidad_maxima: 50,
       categoria: 'Ropa',
       cant_pedida: 10,
-      imagen_url: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop',
       catalogo_id: catalogos[2].id,
     },
     {
@@ -224,29 +242,34 @@ async function bootstrap() {
       cantidad_maxima: 30,
       categoria: 'Deportes',
       cant_pedida: 2,
-      imagen_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
       catalogo_id: catalogos[2].id,
     },
     {
       nombre: 'Mochila Viajera 40L',
-      descripcion: 'Compartimento laptop, carga USB, material resistente al agua.',
+      descripcion:
+        'Compartimento laptop, carga USB, material resistente al agua.',
       precio: 79.99,
       cantidad_minima: 10,
       cantidad_maxima: 50,
       categoria: 'Accesorios',
       cant_pedida: 6,
-      imagen_url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
       catalogo_id: catalogos[2].id,
     },
     {
       nombre: 'Gorra Edición Limitada',
-      descripcion: 'Diseño exclusivo Pingu, materiales premium, ajuste perfecto.',
+      descripcion:
+        'Diseño exclusivo Pingu, materiales premium, ajuste perfecto.',
       precio: 34.99,
       cantidad_minima: 20,
       cantidad_maxima: 100,
       categoria: 'Accesorios',
       cant_pedida: 20,
-      imagen_url: 'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&h=300&fit=crop',
+      imagen_url:
+        'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&h=300&fit=crop',
       catalogo_id: catalogos[2].id,
     },
   ]);
