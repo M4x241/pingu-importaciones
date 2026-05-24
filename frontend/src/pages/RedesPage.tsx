@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowUpRight, Play } from "lucide-react";
+import {  ArrowUpRight, Play } from "lucide-react";
 
 const socials = [
   {

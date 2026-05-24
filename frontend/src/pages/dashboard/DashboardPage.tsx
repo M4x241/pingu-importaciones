@@ -36,7 +36,7 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, [user?.id]);
 
-  const activas = reservaciones.filter((r) => r.estado === 'pendiente' || r.estado === 'confirmada' || r.estado === 'en_camino');
+  const activas = reservaciones.filter((r) => r.estado === 'reservado' || r.estado === 'entregado' || r.estado === 'importando');
   const favoritosCount = 0;
 
   return (

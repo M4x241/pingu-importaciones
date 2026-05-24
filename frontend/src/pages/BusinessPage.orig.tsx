@@ -19,7 +19,7 @@ const sidebarItems = [
 export default function BusinessPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [productos, setProductos] = useState<Product[]>([]);
-  const [_empresas, setEmpresas] = useState<Empresa[]>([]);
+  const [ setEmpresas] = useState<Empresa[]>([]);
   const [catalogos, setCatalogos] = useState<Catalogo[]>([]);
   const [loading, setLoading] = useState(true);
 

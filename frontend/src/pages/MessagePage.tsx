@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Mail, MapPin, Phone, Send } from "lucide-react";
+import {  Mail, MapPin, Phone, Send } from "lucide-react";
 
 export default function MessagePage() {
   const [form, setForm] = useState({ nombre: "", email: "", mensaje: "" });

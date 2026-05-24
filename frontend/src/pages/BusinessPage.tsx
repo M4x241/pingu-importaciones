@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Package, BarChart3, Settings, ShoppingBag, Users, Plus, Search,
-  TrendingUp, DollarSign, Edit, Trash2, LogOut, ChevronRight, X,
+  TrendingUp, DollarSign, Edit, Trash2, LogOut, X,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -11,7 +11,7 @@ import { empresasService } from '../services/empresas';
 import { catalogosService } from '../services/catalogos';
 import { reservacionesService, type ReservacionConDetalles } from '../services/reservaciones';
 import { api } from '../services/api';
-import type { Product, Empresa, Catalogo } from '../types';
+import type { Product, Empresa, Catalogo, Categoria } from '../types';
 
 const sidebarItems = [
   { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -36,7 +36,7 @@ export default function BusinessPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [productos, setProductos] = useState<Product[]>([]);
-  const [empresas, setEmpresas] = useState<Empresa[]>([]);
+  const [ setEmpresas] = useState<Empresa[]>([]);
   const [catalogos, setCatalogos] = useState<Catalogo[]>([]);
   const [reservaciones, setReservaciones] = useState<ReservacionConDetalles[]>([]);
   const [loading, setLoading] = useState(true);
@@ -115,8 +115,10 @@ export default function BusinessPage() {
         precio: Number(newProduct.precio),
         cantidad_minima: Number(newProduct.cantidad_minima) || 1,
         cantidad_maxima: Number(newProduct.cantidad_maxima) || 10,
-        categoria: newProduct.categoria || null,
-        imagen_url: newProduct.imagen_url || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
+        categoria: (newProduct.categoria as Categoria) || null,
+        imagen_url:
+          newProduct.imagen_url ||
+          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
         catalogo_id: Number(newProduct.catalogo_id),
         cant_pedida: 0,
       });
@@ -164,7 +166,7 @@ export default function BusinessPage() {
       precio: String(product.precio),
       cantidad_minima: String(product.cantidad_minima),
       cantidad_maxima: String(product.cantidad_maxima),
-      categoria: product.categoria || '',
+      categoria: (newProduct.categoria as Categoria) || "",
       imagen_url: product.imagen_url,
       catalogo_id: String(product.catalogo_id),
     });
@@ -180,7 +182,7 @@ export default function BusinessPage() {
         precio: Number(editForm.precio),
         cantidad_minima: Number(editForm.cantidad_minima) || 1,
         cantidad_maxima: Number(editForm.cantidad_maxima) || 10,
-        categoria: editForm.categoria || null,
+        categoria: (editForm.categoria as Categoria) || null,
         imagen_url: editForm.imagen_url,
         catalogo_id: Number(editForm.catalogo_id),
       });
