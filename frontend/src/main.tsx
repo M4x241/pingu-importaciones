@@ -15,6 +15,8 @@ import RegisterPage from './pages/auth/RegisterPage'
 import AdminPage from './pages/AdminPage'
 import BusinessPage from './pages/BusinessPage'
 import ClientPage from './pages/ClientPage'
+import RedesPage from './pages/RedesPage'
+import MessagePage from './pages/MessagePage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -30,6 +32,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/redes" element={<RedesPage />} />
+            <Route path="/message" element={<MessagePage />} />
           </Route>
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/business" element={<BusinessPage />} />

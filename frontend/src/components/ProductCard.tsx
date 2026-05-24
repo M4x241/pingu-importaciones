@@ -51,7 +51,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="absolute inset-0 bg-gradient-to-t from-oxford/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         {product.badge && (
           <span
-            className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold"
+            className="absolute top-3 left-3 !px-3 !py-1 rounded-full text-xs font-bold"
             style={{
               background: product.badge === 'Oferta' ? 'rgba(245, 158, 11, 0.9)' : 'rgba(34, 197, 94, 0.9)',
               color: '#0F172A',
@@ -62,7 +62,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
       </div>
 
-      <div className="p-5 space-y-3">
+      <div className="!p-5 !space-y-3">
         <h3 className="text-lg font-bold text-white group-hover:text-amber transition-colors duration-300 leading-tight line-clamp-1">
           {product.nombre}
         </h3>
@@ -72,14 +72,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </p>
 
         {/* Progress bar */}
-        <div className="space-y-1.5">
+        <div className="!space-y-1.5">
           <div className="flex items-center justify-between text-xs">
             <span className="flex items-center gap-1 text-slate">
               <Users className="w-3 h-3" />
-              {product.cant_pedida}/{product.cantidad_minima}
+              {product.cant_pedida}/{product.cantidad_minima} Minimo
             </span>
             <span className="font-semibold" style={{ color: isCompleted ? '#22C55E' : progress >= 75 ? '#F59E0B' : '#94A3B8' }}>
-              {isCompleted ? 'Completado' : `${progress}%`}
+              {isCompleted ? 'Listo para importar' : `${progress}%`}
             </span>
           </div>
           <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.08)' }}>
@@ -91,20 +91,20 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
 
         <div className="flex items-center justify-between pt-1">
-          <div className="space-y-0.5">
+          <div className="!space-y-0.5">
             {product.originalPrice && (
               <span className="text-sm text-slate/50 line-through block">
-                ${Number(product.originalPrice).toFixed(2)}
+                Bs {Number(product.originalPrice).toFixed(2)}
               </span>
             )}
             <span className="text-2xl font-extrabold text-amber">
-              ${Number(product.precio).toFixed(2)}
+              Bs {Number(product.precio).toFixed(2)}
             </span>
           </div>
 
           <button
             onClick={handleAddClick}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105"
+            className="flex items-center gap-2 !px-4 !py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105"
             style={{
               background: 'linear-gradient(135deg, #F59E0B, #D97706)',
               color: '#0F172A',

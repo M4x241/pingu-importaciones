@@ -29,10 +29,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-24" style={{ backgroundColor: '#0F172A' }}>
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6">
+    <div className="min-h-screen flex items-center justify-center !px-6 !py-24" style={{ backgroundColor: '#0F172A' }}>
+      <div className="w-full !max-w-md">
+        <div className="text-center !mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 !mb-6">
             <span className="text-4xl">🐧</span>
             <span className="text-2xl font-bold text-white">
               Pingu <span className="text-amber">Importaciones</span>
@@ -41,11 +41,11 @@ export default function LoginPage() {
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
             Bienvenido de <span className="text-amber">Vuelta</span>
           </h1>
-          <p className="text-slate mt-2">Ingresa a tu cuenta para continuar</p>
+          <p className="text-slate !mt-2">Ingresa a tu cuenta para continuar</p>
         </div>
 
         <div
-          className="rounded-2xl p-8 space-y-6"
+          className="rounded-2xl !p-8 !space-y-6"
           style={{
             background: 'rgba(255, 255, 255, 0.04)',
             border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -53,13 +53,13 @@ export default function LoginPage() {
           }}
         >
           {error && (
-            <div className="p-4 rounded-xl text-sm font-medium" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+            <div className="!p-4 rounded-xl text-sm font-medium" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
+          <form onSubmit={handleSubmit} className="!space-y-5">
+            <div className="!space-y-2">
               <label className="text-sm font-medium text-slate-light">Correo Electrónico</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate" />
@@ -69,13 +69,13 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@correo.com"
                   required
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
+                  className="w-full !pl-12 !pr-4 !py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="!space-y-2">
               <label className="text-sm font-medium text-slate-light">Contraseña</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate" />
@@ -85,7 +85,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-12 pr-12 py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
+                  className="w-full !pl-12 !pr-12 !py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
                 <button
@@ -109,7 +109,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-bold py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 text-base"
+              className="w-full flex items-center justify-center gap-2 !bg-amber hover:bg-amber-dark text-oxford font-bold !py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 text-base"
               style={{ boxShadow: '0 4px 20px rgba(245, 158, 11, 0.3)' }}
             >
               {loading ? (
@@ -131,7 +131,7 @@ export default function LoginPage() {
               <div className="w-full" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)' }} />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4" style={{ background: '#0F172A', color: 'rgba(203, 213, 225, 0.5)' }}>
+              <span className="!px-4" style={{ background: '#0F172A', color: 'rgba(203, 213, 225, 0.5)' }}>
                 o continúa con
               </span>
             </div>
@@ -140,7 +140,7 @@ export default function LoginPage() {
           <div className="grid grid-cols-2 gap-4">
             <button
               type="button"
-              className="flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]"
+              className="flex items-center justify-center gap-3 !py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]"
               style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'rgba(203, 213, 225, 0.8)' }}
             >
               <User className="w-5 h-5" />
@@ -148,7 +148,7 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              className="flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]"
+              className="flex items-center justify-center gap-3 !py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]"
               style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', color: '#FCD34D' }}
             >
               <User className="w-5 h-5" />
@@ -157,7 +157,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p className="text-center text-sm text-slate mt-8">
+        <p className="text-center text-sm text-slate !mt-8">
           ¿No tienes cuenta?{' '}
           <Link to="/register" className="text-amber hover:text-amber-light font-semibold transition-colors">
             Regístrate aquí

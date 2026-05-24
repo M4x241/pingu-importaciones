@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { Menu, X, User, Package, ShoppingCart, LogOut } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { cartCount, setCartOpen } = useCart();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -23,9 +25,8 @@ const Navbar = () => {
   const navLinks = [
     { label: "Inicio", to: "/" },
     { label: "Tienda", to: "/tienda" },
-    { label: "Grupos", to: "/#grupos" },
-    { label: "Empresas", to: "/business" },
-    { label: "Contacto", to: "/#contacto" },
+    { label: "Redes", to: "/redes" },
+    { label: "Escribenos", to: "/message" },
   ];
 
   const isActive = (to: string) => {
@@ -55,7 +56,7 @@ const Navbar = () => {
           boxShadow: isScrolled ? "0 4px 20px rgba(15,23,42,0.15)" : "none",
         }}
       >
-        <div className="w-full mx-auto px-6 py-4 flex justify-between items-center relative z-50">
+        <div className="w-full mx-auto !px-6 py-4 flex justify-between items-center relative z-50">
           <Link to="/" className="flex items-center gap-3 group">
             <span className="text-3xl">🐧</span>
             <span className="text-xl font-bold text-white tracking-tight">
@@ -84,24 +85,46 @@ const Navbar = () => {
 
           {/* Botones de Escritorio */}
           <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/tienda"
-              className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-amber"
+            <button
+              onClick={() => setCartOpen(true)}
+              className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-amber relative"
               style={{ color: "rgba(203, 213, 225, 0.8)" }}
             >
               <ShoppingCart className="w-4 h-4" />
-              Tienda
-            </Link>
+              Carrito
+              {cartCount > 0 && (
+                <span
+                  className="absolute -top-2 -right-4 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
+                  style={{ background: "#F59E0B", color: "#0F172A" }}
+                >
+                  {cartCount}
+                </span>
+              )}
+            </button>
             {isAuthenticated ? (
               <div className="flex items-center gap-3">
-                <span className="text-sm text-white/70">{user?.nombres}</span>
-                {(user?.role === 'empresa' || user?.role === 'cliente') && (
-                  <Link to={user?.role === 'empresa' ? '/business' : '/client'} className="text-sm text-amber hover:text-amber-light transition-colors">
+                {/* <Link
+                  to="/tienda"
+                  className="inline-flex items-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-semibold !px-6 !py-2.5 rounded-full transition-all duration-300 hover:scale-105 text-lg group shadow-2xl"
+                  style={{ boxShadow: "0 4px 15px rgba(245, 158, 11, 0.3)" }}
+                >
+                  <Package className="w-4 h-4" />
+                  Comprar Ahora
+                </Link> */}
+                <span className="text-xm text-white/70 ">{user?.nombres}</span>
+                {(user?.role === "empresa" || user?.role === "cliente") && (
+                  <Link
+                    to={user?.role === "empresa" ? "/business" : "/client"}
+                    className="text-sm text-amber hover:text-amber-light transition-colors bg-amber/10 !px-4 !py-2 rounded-full font-medium"
+                  >
                     Panel
                   </Link>
                 )}
                 <button
-                  onClick={() => { logout(); navigate('/'); }}
+                  onClick={() => {
+                    logout();
+                    navigate("/");
+                  }}
                   className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-red-400 !px-4 !py-2 rounded-full"
                   style={{
                     background: "rgba(255, 255, 255, 0.06)",
@@ -127,14 +150,6 @@ const Navbar = () => {
                 Ingresar
               </Link>
             )}
-            <Link
-              to="/tienda"
-              className="inline-flex items-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-semibold !px-6 !py-2.5 rounded-full transition-all duration-300 hover:scale-105 text-lg group shadow-2xl"
-              style={{ boxShadow: "0 4px 15px rgba(245, 158, 11, 0.3)" }}
-            >
-              <Package className="w-4 h-4" />
-              Comprar Ahora
-            </Link>
           </div>
 
           {/* Botón Hamburguesa Móvil */}
@@ -211,16 +226,28 @@ const Navbar = () => {
           <div className="pt-5 mt-4 border-t border-white/10 flex flex-col gap-3">
             {isAuthenticated ? (
               <>
-                <div className="text-center text-sm text-white/70 px-4 py-2">{user?.nombres} {user?.apellidos}</div>
-                {(user?.role === 'empresa' || user?.role === 'cliente') && (
-                  <Link to={user?.role === 'empresa' ? '/business' : '/client'} onClick={() => setIsMobileOpen(false)}
+                <div className="text-center text-sm text-white/70 px-4 py-2">
+                  {user?.nombres} {user?.apellidos}
+                </div>
+                {(user?.role === "empresa" || user?.role === "cliente") && (
+                  <Link
+                    to={user?.role === "empresa" ? "/business" : "/client"}
+                    onClick={() => setIsMobileOpen(false)}
                     className="flex items-center justify-center gap-2 w-full text-lg font-bold px-6 py-4 rounded-2xl transition-all duration-300"
-                    style={{ background: "rgba(245, 158, 11, 0.1)", color: "#F59E0B" }}>
-                    {user?.role === 'empresa' ? 'Panel Empresa' : 'Mi Panel'}
+                    style={{
+                      background: "rgba(245, 158, 11, 0.1)",
+                      color: "#F59E0B",
+                    }}
+                  >
+                    {user?.role === "empresa" ? "Panel Empresa" : "Mi Panel"}
                   </Link>
                 )}
                 <button
-                  onClick={() => { setIsMobileOpen(false); logout(); navigate('/'); }}
+                  onClick={() => {
+                    setIsMobileOpen(false);
+                    logout();
+                    navigate("/");
+                  }}
                   className="flex items-center justify-center gap-2 w-full text-lg font-bold px-6 py-4 rounded-2xl transition-all duration-300 active:scale-[0.98]"
                   style={{
                     background: "rgba(255, 255, 255, 0.05)",

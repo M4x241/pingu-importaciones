@@ -38,10 +38,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-24" style={{ backgroundColor: '#0F172A' }}>
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6">
+    <div className="min-h-screen flex items-center justify-center !px-6 !py-24" style={{ backgroundColor: '#0F172A' }}>
+      <div className="w-full !max-w-md">
+        <div className="text-center !mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 !mb-6">
             <span className="text-4xl">🐧</span>
             <span className="text-2xl font-bold text-white">
               Pingu <span className="text-amber">Importaciones</span>
@@ -50,11 +50,11 @@ export default function RegisterPage() {
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
             Únete a la <span className="text-amber">Colonia</span>
           </h1>
-          <p className="text-slate mt-2">Crea tu cuenta y empieza a ahorrar</p>
+          <p className="text-slate !mt-2">Crea tu cuenta y empieza a ahorrar</p>
         </div>
 
         <div
-          className="rounded-2xl p-8 space-y-6"
+          className="rounded-2xl !p-8 !space-y-6"
           style={{
             background: 'rgba(255, 255, 255, 0.04)',
             border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -67,8 +67,8 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="!space-y-5">
+            <div className="grid grid-cols-2 !gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-light">Nombres</label>
                 <input
@@ -78,7 +78,7 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   placeholder="Juan"
                   required
-                  className="w-full px-4 py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
+                  className="w-full !px-4 !py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
               </div>
@@ -91,7 +91,7 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   placeholder="Pérez"
                   required
-                  className="w-full px-4 py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
+                  className="w-full !px-4 !py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
               </div>
@@ -108,19 +108,18 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   placeholder="tu@correo.com"
                   required
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
+                  className="w-full !pl-12 !pr-4 !py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="!space-y-2">
               <label className="text-sm font-medium text-slate-light">Tipo de Cuenta</label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {[
                   { value: 'cliente', label: 'Cliente', icon: ShoppingBag },
                   { value: 'empresa', label: 'Empresa', icon: Building2 },
-                  { value: 'admin', label: 'Admin', icon: User },
                 ].map((opt) => (
                   <button
                     key={opt.value}
@@ -140,7 +139,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="!space-y-2">
               <label className="text-sm font-medium text-slate-light">Contraseña</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate" />
@@ -152,7 +151,7 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                   required
                   minLength={6}
-                  className="w-full pl-12 pr-12 py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
+                  className="w-full !pl-12 !pr-12 !py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
                 <button
@@ -165,7 +164,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="!space-y-2">
               <label className="text-sm font-medium text-slate-light">Confirmar Contraseña</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate" />
@@ -176,7 +175,7 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
+                  className="w-full !pl-12 !pr-4 !py-3.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50"
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
               </div>
@@ -185,7 +184,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-bold py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 text-base"
+              className="w-full flex items-center justify-center gap-2 !bg-amber hover:bg-amber-dark text-oxford font-bold !py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 text-base"
               style={{ boxShadow: '0 4px 20px rgba(245, 158, 11, 0.3)' }}
             >
               {loading ? (
@@ -203,7 +202,7 @@ export default function RegisterPage() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-slate mt-8">
+        <p className="text-center text-sm text-slate !mt-8">
           ¿Ya tienes cuenta?{' '}
           <Link to="/login" className="text-amber hover:text-amber-light font-semibold transition-colors">
             Inicia sesión

@@ -43,19 +43,19 @@ export default function BusinessPage() {
             borderRight: '1px solid rgba(255, 255, 255, 0.06)',
           }}
         >
-          <Link to="/" className="flex items-center gap-2 !px-4 !py-6 mb-4">
+          <Link to="/" className="flex items-center gap-2 !px-4 !py-6 !mb-4">
             <span className="text-2xl">🐧</span>
             <span className="text-lg font-bold text-white">
               Pingu <span className="text-amber">Empresas</span>
             </span>
           </Link>
 
-          <div className="space-y-1">
+          <div className="!space-y-1">
             {sidebarItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className="w-full flex items-center gap-3 !px-4 !py-3 rounded-xl text-lg font-medium transition-all duration-300"
+                className="w-full flex items-center gap-3 !px-4 !py-3 !rounded-xl !text-lg font-medium transition-all duration-300"
                 style={{
                   background: activeTab === item.id ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
                   color: activeTab === item.id ? '#FCD34D' : 'rgba(203, 213, 225, 0.7)',
@@ -67,18 +67,18 @@ export default function BusinessPage() {
             ))}
           </div>
 
-          <div className="mt-auto !pt-8">
+          <div className="!mt-auto !pt-8">
             <Link
               to="/"
-              className="flex items-center gap-3 !px-4 !py-3 rounded-xl text-sm text-slate hover:text-white transition-colors"
+              className="flex items-center gap-3 !px-4 !py-3 !rounded-xl text-sm text-slate hover:text-white transition-colors"
             >
               ← Volver al Sitio
             </Link>
           </div>
         </aside>
 
-        <div className="flex-1 !p-6 lg:p-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 !mb-10">
+        <div className="flex-1 !p-6 !lg:p-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-40 !mb-10">
             <div>
               <h1 className="text-4xl font-extrabold text-white">
                 Panel de Empresa
@@ -96,7 +96,7 @@ export default function BusinessPage() {
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
               </div>
-              <button className="flex items-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-semibold !px-5 !py-2.5 rounded-xl transition-all duration-300 text-sm whitespace-nowrap">
+              <button className="flex items-center gap-2 !bg-amber hover:bg-amber-dark text-oxford font-semibold !px-5 !py-2.5 rounded-xl transition-all duration-300 text-sm whitespace-nowrap">
                 <Plus className="w-4 h-4" />
                 Nuevo Producto
               </button>

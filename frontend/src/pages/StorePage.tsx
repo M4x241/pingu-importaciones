@@ -83,7 +83,7 @@ export default function StorePage() {
 
       <button
         onClick={() => setCartOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3.5 rounded-full font-semibold text-sm transition-all duration-300 hover:scale-105 shadow-2xl"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 !px-3.5 !py-3.5 rounded-full font-semibold text-sm transition-all duration-300 hover:scale-105 shadow-2xl"
         style={{
           background: "linear-gradient(135deg, #F59E0B, #D97706)",
           color: "#0F172A",
@@ -94,7 +94,7 @@ export default function StorePage() {
         Carrito
         {cartCount > 0 && (
           <span
-            className="ml-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+            className="!ml-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
             style={{ background: "#0F172A", color: "#F59E0B" }}
           >
             {cartCount}

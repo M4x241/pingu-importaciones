@@ -30,13 +30,13 @@ const CartDrawer = () => {
         }}
       >
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
+          <div className="flex items-center justify-between !px-6 !py-5 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
             <div className="flex items-center gap-3">
               <ShoppingBag className="w-5 h-5 text-amber" />
               <h2 className="text-lg font-bold text-white">Tu Carrito</h2>
               {cartCount > 0 && (
                 <span
-                  className="text-xs font-bold px-2 py-0.5 rounded-full"
+                  className="text-xs font-bold !px-2 !py-0.5 rounded-full"
                   style={{ background: '#F59E0B', color: '#0F172A' }}
                 >
                   {cartCount}
@@ -51,9 +51,9 @@ const CartDrawer = () => {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+          <div className="flex-1 overflow-y-auto !px-6 !py-6 !space-y-4">
             {cart.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+              <div className="flex flex-col items-center justify-center h-full text-center !space-y-4">
                 <ShoppingBag className="w-16 h-16 text-white/10" />
                 <p className="text-slate/50 text-lg font-medium">Tu carrito está vacío</p>
                 <p className="text-slate/30 text-sm">Agrega productos para comenzar</p>
@@ -62,7 +62,7 @@ const CartDrawer = () => {
               cart.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-start gap-4 p-4 rounded-xl"
+                  className="flex items-start gap-4 !p-4 rounded-xl"
                   style={{
                     background: 'rgba(255, 255, 255, 0.03)',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -74,7 +74,7 @@ const CartDrawer = () => {
 
                   <div className="flex-1 min-w-0 space-y-2">
                     <h3 className="text-sm font-semibold text-white truncate">{item.nombre}</h3>
-                    <p className="text-amber font-bold">${(Number(item.precio) * item.quantity).toFixed(2)}</p>
+                    <p className="text-amber font-bold">Bs {(Number(item.precio) * item.quantity).toFixed(2)}</p>
 
                     <div className="flex items-center gap-2">
                       <button
@@ -106,22 +106,22 @@ const CartDrawer = () => {
           </div>
 
           {cart.length > 0 && (
-            <div className="px-6 py-5 border-t space-y-4" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
+            <div className="!px-6 !py-5 border-t !space-y-4" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
               <div className="flex justify-between items-center">
                 <span className="text-white/70 text-sm">Subtotal</span>
-                <span className="text-white font-bold">${total.toFixed(2)}</span>
+                <span className="text-white font-bold">Bs {total.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center text-sm">
-                <span className="text-white/50">Envío</span>
-                <span className="text-green-400 font-medium">Gratis</span>
+                <span className="text-white/50">Sin Envío</span>
+                <span className="text-green-400 font-medium">Tu lo recoges</span>
               </div>
-              <div className="border-t pt-4 flex justify-between items-center" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
+              <div className="border-t !pt-4 flex justify-between items-center" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
                 <span className="text-white font-bold text-lg">Total</span>
-                <span className="text-amber font-extrabold text-2xl">${total.toFixed(2)}</span>
+                <span className="text-amber font-extrabold text-2xl">Bs {total.toFixed(2)}</span>
               </div>
               <button
                 onClick={handleCheckout}
-                className="w-full py-4 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-[1.02]"
+                className="w-full !py-4 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-[1.02]"
                 style={{
                   background: 'linear-gradient(135deg, #F59E0B, #D97706)',
                   color: '#0F172A',

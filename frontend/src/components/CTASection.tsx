@@ -23,7 +23,7 @@ const CTASection = () => {
       {/* Usamos flex-col y gap para un control perfecto del espaciado vertical */}
       <div className="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center gap-10 lg:gap-12">
         {/* Badge */}
-        <div
+        {/* <div
           className="inline-flex items-center gap-2 font-bold text-xl tracking-widest uppercase !px-6 !py-2.5 rounded-full shadow-sm"
           style={{
             background: "rgba(245, 158, 11, 0.1)",
@@ -33,7 +33,7 @@ const CTASection = () => {
         >
           <Sparkles className="w-4 h-4 text-amber" />
           ¡Únete Hoy!
-        </div>
+        </div> */}
 
         {/* Título Principal */}
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight">
