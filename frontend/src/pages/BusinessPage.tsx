@@ -36,7 +36,7 @@ export default function BusinessPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [productos, setProductos] = useState<Product[]>([]);
-  const [ setEmpresas] = useState<Empresa[]>([]);
+  const [ ,setEmpresas] = useState<Empresa[]>([]);
   const [catalogos, setCatalogos] = useState<Catalogo[]>([]);
   const [reservaciones, setReservaciones] = useState<ReservacionConDetalles[]>([]);
   const [loading, setLoading] = useState(true);
