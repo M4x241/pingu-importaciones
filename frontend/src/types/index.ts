@@ -5,11 +5,10 @@ export interface Product {
   precio: number;
   cantidad_minima: number;
   cantidad_maxima: number;
+  cant_pedida: number;
   imagen_url: string;
   catalogo_id: number;
-  categoria?: string;
-  rating?: number;
-  reviews?: number;
+  categoria: Categoria | null;
   badge?: string;
   featured?: boolean;
   originalPrice?: number;
@@ -25,6 +24,7 @@ export interface User {
   apellidos: string;
   email: string;
   role: 'admin' | 'empresa' | 'cliente';
+  empresas?: Empresa[];
 }
 
 export interface Empresa {
@@ -51,7 +51,7 @@ export interface Reservacion {
   user_id: number;
   codigo_unico: string;
   fecha_reservacion: string;
-  estado: 'pendiente' | 'confirmada' | 'en_camino' | 'entregada' | 'cancelada';
+  estado: 'reservado' | 'entregado' | 'importando';
 }
 
 export interface DetalleReservacion {
@@ -78,6 +78,8 @@ export interface OrderItem {
   precio: number;
   imagen: string;
 }
+
+export type Categoria = 'Tecnología' | 'Ropa' | 'Hogar' | 'Deportes' | 'Accesorios';
 
 export interface PayPalConfig {
   clientId: string;

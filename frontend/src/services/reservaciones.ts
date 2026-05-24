@@ -9,9 +9,12 @@ export interface ReservacionConDetalles extends Reservacion {
 }
 
 export const reservacionesService = {
-  getAll: (user_id?: number) => {
-    const params = user_id ? `?user_id=${user_id}` : '';
-    return api.get<ReservacionConDetalles[]>(`/api/reservaciones${params}`);
+  getAll: (user_id?: number, empresa_id?: number) => {
+    const params = new URLSearchParams();
+    if (user_id) params.set('user_id', String(user_id));
+    if (empresa_id) params.set('empresa_id', String(empresa_id));
+    const qs = params.toString();
+    return api.get<ReservacionConDetalles[]>(`/api/reservaciones${qs ? '?' + qs : ''}`);
   },
 
   getById: (id: number) =>

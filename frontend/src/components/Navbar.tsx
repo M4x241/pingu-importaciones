@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, Package, ShoppingCart } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Menu, X, User, Package, ShoppingCart, LogOut } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
@@ -79,7 +82,7 @@ const Navbar = () => {
             ))}
           </ul>
 
-          {/* Botones de Escritorio (Intactos) */}
+          {/* Botones de Escritorio */}
           <div className="hidden md:flex items-center gap-4">
             <Link
               to="/tienda"
@@ -89,18 +92,41 @@ const Navbar = () => {
               <ShoppingCart className="w-4 h-4" />
               Tienda
             </Link>
-            <Link
-              to="/login"
-              className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-amber !px-4 !py-2 rounded-full"
-              style={{
-                background: "rgba(255, 255, 255, 0.06)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                color: "rgba(203, 213, 225, 0.8)",
-              }}
-            >
-              <User className="w-4 h-4" />
-              Ingresar
-            </Link>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-white/70">{user?.nombres}</span>
+                {(user?.role === 'empresa' || user?.role === 'cliente') && (
+                  <Link to={user?.role === 'empresa' ? '/business' : '/client'} className="text-sm text-amber hover:text-amber-light transition-colors">
+                    Panel
+                  </Link>
+                )}
+                <button
+                  onClick={() => { logout(); navigate('/'); }}
+                  className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-red-400 !px-4 !py-2 rounded-full"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.06)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    color: "rgba(203, 213, 225, 0.8)",
+                  }}
+                >
+                  <LogOut className="w-4 h-4" />
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 hover:text-amber !px-4 !py-2 rounded-full"
+                style={{
+                  background: "rgba(255, 255, 255, 0.06)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  color: "rgba(203, 213, 225, 0.8)",
+                }}
+              >
+                <User className="w-4 h-4" />
+                Ingresar
+              </Link>
+            )}
             <Link
               to="/tienda"
               className="inline-flex items-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-semibold !px-6 !py-2.5 rounded-full transition-all duration-300 hover:scale-105 text-lg group shadow-2xl"
@@ -183,19 +209,44 @@ const Navbar = () => {
 
           {/* Sección de Botones Inferiores */}
           <div className="pt-5 mt-4 border-t border-white/10 flex flex-col gap-3">
-            <Link
-              to="/login"
-              onClick={() => setIsMobileOpen(false)}
-              className="flex items-center justify-center gap-2 w-full text-lg font-bold px-6 py-4 rounded-2xl transition-all duration-300 active:scale-[0.98]"
-              style={{
-                background: "rgba(255, 255, 255, 0.05)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                color: "rgba(203, 213, 225, 0.9)",
-              }}
-            >
-              <User className="w-5 h-5" />
-              Ingresar a mi cuenta
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <div className="text-center text-sm text-white/70 px-4 py-2">{user?.nombres} {user?.apellidos}</div>
+                {(user?.role === 'empresa' || user?.role === 'cliente') && (
+                  <Link to={user?.role === 'empresa' ? '/business' : '/client'} onClick={() => setIsMobileOpen(false)}
+                    className="flex items-center justify-center gap-2 w-full text-lg font-bold px-6 py-4 rounded-2xl transition-all duration-300"
+                    style={{ background: "rgba(245, 158, 11, 0.1)", color: "#F59E0B" }}>
+                    {user?.role === 'empresa' ? 'Panel Empresa' : 'Mi Panel'}
+                  </Link>
+                )}
+                <button
+                  onClick={() => { setIsMobileOpen(false); logout(); navigate('/'); }}
+                  className="flex items-center justify-center gap-2 w-full text-lg font-bold px-6 py-4 rounded-2xl transition-all duration-300 active:scale-[0.98]"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.05)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    color: "rgba(203, 213, 225, 0.9)",
+                  }}
+                >
+                  <LogOut className="w-5 h-5" />
+                  Cerrar Sesión
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setIsMobileOpen(false)}
+                className="flex items-center justify-center gap-2 w-full text-lg font-bold px-6 py-4 rounded-2xl transition-all duration-300 active:scale-[0.98]"
+                style={{
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  color: "rgba(203, 213, 225, 0.9)",
+                }}
+              >
+                <User className="w-5 h-5" />
+                Ingresar a mi cuenta
+              </Link>
+            )}
 
             <Link
               to="/tienda"

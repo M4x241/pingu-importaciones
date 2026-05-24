@@ -2,6 +2,14 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMan
 import { Catalogo } from './catalogo.entity';
 import { DetalleReservacion } from './detalle-reservacion.entity';
 
+export enum Categoria {
+  TECNOLOGIA = 'Tecnología',
+  ROPA = 'Ropa',
+  HOGAR = 'Hogar',
+  DEPORTES = 'Deportes',
+  ACCESORIOS = 'Accesorios',
+}
+
 @Entity('productos')
 export class Producto {
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
@@ -21,6 +29,12 @@ export class Producto {
 
   @Column({ type: 'int', unsigned: true })
   cantidad_maxima: number;
+
+  @Column({ type: 'enum', enum: Categoria, nullable: true })
+  categoria: Categoria;
+
+  @Column({ type: 'int', unsigned: true, default: 0 })
+  cant_pedida: number;
 
   @Column({ type: 'varchar', length: 500 })
   imagen_url: string;

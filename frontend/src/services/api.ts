@@ -1,10 +1,20 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = localStorage.getItem('access_token');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: { ...headers, ...(options?.headers as Record<string, string> || {}) },
     ...options,
   });
+  if (res.status === 401) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+    throw new Error('Sesión expirada');
+  }
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: 'Error de conexión' }));
     throw new Error(err.message || `Error ${res.status}`);

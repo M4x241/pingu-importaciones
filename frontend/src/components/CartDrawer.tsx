@@ -1,58 +1,50 @@
 import { X, ShoppingBag, Trash2, Minus, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import type { CartItem } from '../types';
+import { useCart } from '../context/CartContext';
 
-interface CartDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  cart: CartItem[];
-  onUpdateQuantity: (id: number, qty: number) => void;
-  onRemove: (id: number) => void;
-}
-
-const CartDrawer = ({ isOpen, onClose, cart, onUpdateQuantity, onRemove }: CartDrawerProps) => {
+const CartDrawer = () => {
   const navigate = useNavigate();
+  const { cart, cartOpen, setCartOpen, updateQuantity, removeFromCart, cartCount } = useCart();
   const total = cart.reduce((sum, item) => sum + Number(item.precio) * item.quantity, 0);
-  const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleCheckout = () => {
-    onClose();
+    setCartOpen(false);
     navigate('/checkout', { state: { items: cart } });
   };
 
   return (
     <>
-      {isOpen && (
+      {cartOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
-          onClick={onClose}
+          onClick={() => setCartOpen(false)}
         />
       )}
 
       <div
         className="fixed top-0 right-0 h-full w-full max-w-md z-50 transition-transform duration-500 ease-out"
         style={{
-          transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+          transform: cartOpen ? 'translateX(0)' : 'translateX(100%)',
           background: '#0F172A',
           borderLeft: '1px solid rgba(255, 255, 255, 0.06)',
         }}
       >
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between px-6 !py-5 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
+          <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
             <div className="flex items-center gap-3">
               <ShoppingBag className="w-5 h-5 text-amber" />
               <h2 className="text-lg font-bold text-white">Tu Carrito</h2>
-              {itemCount > 0 && (
+              {cartCount > 0 && (
                 <span
                   className="text-xs font-bold px-2 py-0.5 rounded-full"
                   style={{ background: '#F59E0B', color: '#0F172A' }}
                 >
-                  {itemCount}
+                  {cartCount}
                 </span>
               )}
             </div>
             <button
-              onClick={onClose}
+              onClick={() => setCartOpen(false)}
               className="w-9 h-9 rounded-full flex items-center justify-center transition-colors duration-300 hover:bg-white/10"
             >
               <X className="w-5 h-5 text-white" />
@@ -70,7 +62,7 @@ const CartDrawer = ({ isOpen, onClose, cart, onUpdateQuantity, onRemove }: CartD
               cart.map((item) => (
                 <div
                   key={item.id}
-                  className="flex gap-4 p-4 rounded-xl transition-all duration-300"
+                  className="flex items-start gap-4 p-4 rounded-xl"
                   style={{
                     background: 'rgba(255, 255, 255, 0.03)',
                     border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -86,7 +78,7 @@ const CartDrawer = ({ isOpen, onClose, cart, onUpdateQuantity, onRemove }: CartD
 
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         className="w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300 hover:bg-white/10"
                         style={{ border: '1px solid rgba(255, 255, 255, 0.1)' }}
                       >
@@ -94,14 +86,14 @@ const CartDrawer = ({ isOpen, onClose, cart, onUpdateQuantity, onRemove }: CartD
                       </button>
                       <span className="text-sm font-medium text-white w-6 text-center">{item.quantity}</span>
                       <button
-                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         className="w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300 hover:bg-white/10"
                         style={{ border: '1px solid rgba(255, 255, 255, 0.1)' }}
                       >
                         <Plus className="w-3 h-3 text-white" />
                       </button>
                       <button
-                        onClick={() => onRemove(item.id)}
+                        onClick={() => removeFromCart(item.id)}
                         className="ml-auto w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300 hover:bg-red-500/20"
                       >
                         <Trash2 className="w-3.5 h-3.5 text-red-400" />
@@ -114,7 +106,7 @@ const CartDrawer = ({ isOpen, onClose, cart, onUpdateQuantity, onRemove }: CartD
           </div>
 
           {cart.length > 0 && (
-            <div className="px-6 !py-5 border-t space-y-4" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
+            <div className="px-6 py-5 border-t space-y-4" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
               <div className="flex justify-between items-center">
                 <span className="text-white/70 text-sm">Subtotal</span>
                 <span className="text-white font-bold">${total.toFixed(2)}</span>
@@ -133,10 +125,10 @@ const CartDrawer = ({ isOpen, onClose, cart, onUpdateQuantity, onRemove }: CartD
                 style={{
                   background: 'linear-gradient(135deg, #F59E0B, #D97706)',
                   color: '#0F172A',
-                  boxShadow: '0 4px 20px rgba(245, 158, 11, 0.3)',
+                  boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)',
                 }}
               >
-                Proceder al Pago
+                Ir al Checkout
               </button>
             </div>
           )}

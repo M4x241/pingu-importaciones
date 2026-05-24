@@ -16,11 +16,9 @@ const sidebarItems = [
 ];
 
 const statusStyles: Record<string, { label: string; color: string; bg: string }> = {
-  pendiente: { label: 'Pendiente', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)' },
-  confirmada: { label: 'Confirmada', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.1)' },
-  en_camino: { label: 'En Camino', color: '#8B5CF6', bg: 'rgba(139, 92, 246, 0.1)' },
-  entregada: { label: 'Entregada', color: '#22C55E', bg: 'rgba(34, 197, 94, 0.1)' },
-  cancelada: { label: 'Cancelada', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.1)' },
+  reservado: { label: 'Reservado', color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.1)' },
+  entregado: { label: 'Entregado', color: '#22C55E', bg: 'rgba(34, 197, 94, 0.1)' },
+  importando: { label: 'Importando', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)' },
 };
 
 export default function AdminPage() {
@@ -166,10 +164,10 @@ export default function AdminPage() {
                 >
                   <h3 className="text-lg font-bold text-white mb-4">Grupos Activos</h3>
                   <div className="space-y-4">
-                    {reservaciones.filter(r => r.estado === 'pendiente' || r.estado === 'confirmada').slice(0, 3).length === 0 ? (
-                      <p className="text-slate text-sm">No hay grupos activos.</p>
+                    {reservaciones.filter(r => r.estado === 'reservado' || r.estado === 'importando').slice(0, 3).length === 0 ? (
+                      <p className="text-slate text-sm">Sin pedidos activos</p>
                     ) : (
-                      reservaciones.filter(r => r.estado === 'pendiente' || r.estado === 'confirmada').slice(0, 3).map((res) => (
+                      reservaciones.filter(r => r.estado === 'reservado' || r.estado === 'importando').slice(0, 3).map((res) => (
                         <div key={res.id} className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <span className="text-white font-medium">{res.codigo_unico}</span>

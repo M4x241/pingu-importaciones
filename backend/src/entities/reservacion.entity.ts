@@ -2,6 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMan
 import { User } from './user.entity';
 import { DetalleReservacion } from './detalle-reservacion.entity';
 
+export enum EstadoReservacion {
+  RESERVADO = 'reservado',
+  ENTREGADO = 'entregado',
+  IMPORTANDO = 'importando',
+}
+
 @Entity('reservaciones')
 export class Reservacion {
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
@@ -16,8 +22,8 @@ export class Reservacion {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   fecha_reservacion: Date;
 
-  @Column({ type: 'varchar', length: 50, default: 'pendiente' })
-  estado: string;
+  @Column({ type: 'enum', enum: EstadoReservacion, default: EstadoReservacion.RESERVADO })
+  estado: EstadoReservacion;
 
   @ManyToOne(() => User, (user) => user.reservaciones)
   @JoinColumn({ name: 'user_id' })

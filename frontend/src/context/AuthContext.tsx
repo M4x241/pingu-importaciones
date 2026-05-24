@@ -36,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         apellidos: res.user.apellidos,
         email: res.user.email,
         role: res.user.role as User['role'],
+        empresas: res.user.empresas || [],
       };
       localStorage.setItem('user', JSON.stringify(u));
       setUser(u);
@@ -62,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         apellidos: res.user.apellidos,
         email: res.user.email,
         role: res.user.role as User['role'],
+        empresas: res.user.empresas || [],
       };
       localStorage.setItem('user', JSON.stringify(u));
       setUser(u);

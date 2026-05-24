@@ -24,7 +24,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return this.repo.findOne({ where: { email }, relations: { role: true } });
+    return this.repo.findOne({ where: { email }, relations: { role: true, empresas: true } });
   }
 
   create(data: Partial<User>) {

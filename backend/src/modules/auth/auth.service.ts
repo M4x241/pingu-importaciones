@@ -22,7 +22,9 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { sub: user.id, email: user.email, role: user.role?.name || 'cliente' };
+    const empresas = user.empresas || [];
+    const empresa_ids = empresas.map((e: any) => e.id);
+    const payload = { sub: user.id, email: user.email, role: user.role?.name || 'cliente', empresa_ids };
     return {
       access_token: this.jwtService.sign(payload),
       user: {
@@ -31,6 +33,7 @@ export class AuthService {
         apellidos: user.apellidos,
         email: user.email,
         role: user.role?.name || 'cliente',
+        empresas: user.empresas || [],
       },
     };
   }

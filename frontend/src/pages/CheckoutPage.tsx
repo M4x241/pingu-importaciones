@@ -30,7 +30,7 @@ export default function CheckoutPage() {
         const res = await reservacionesService.create({
           user_id: user.id,
           codigo_unico: codigo,
-          estado: 'confirmada',
+          estado: 'reservado',
         });
         for (const item of items) {
           await api.post('/api/detalle-reservacion', {

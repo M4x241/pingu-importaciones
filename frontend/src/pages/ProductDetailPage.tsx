@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ShoppingCart, Heart, Star, Truck, Shield, ArrowLeft, Minus, Plus, Share2, Package } from 'lucide-react';
+import { ShoppingCart, Truck, Shield, ArrowLeft, Minus, Plus, Share2, Package, Users } from 'lucide-react';
 import { productosService } from '../services/productos';
 import ProductCard from '../components/ProductCard';
+import { useCart } from '../context/CartContext';
 import type { Product } from '../types';
 
 const emojis: Record<string, string> = {
-  Electrónicos: '🎧',
+  Tecnología: '💻',
   Ropa: '👕',
   Hogar: '💡',
   Deportes: '🏋️',
-  Juguetes: '🤖',
-  Libros: '📚',
+  Accesorios: '⌚',
 };
 
 export default function ProductDetailPage() {
@@ -20,29 +20,41 @@ export default function ProductDetailPage() {
   const [similar, setSimilar] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [isWished, setIsWished] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const { addToCart, setCartOpen } = useCart();
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
+    setSimilar([]);
+    let categoria: string | null = null;
     productosService
       .getById(Number(id))
       .then((p) => {
         setProduct(p);
+        categoria = p.categoria;
         return productosService.getAll();
       })
       .then((all) => {
-        setSimilar(all.filter((p) => p.id !== Number(id) && p.categoria === product?.categoria).slice(0, 4));
+        if (!all || !categoria) return;
+        setSimilar(all.filter((prod) => prod.id !== Number(id) && prod.categoria && prod.categoria.toLowerCase().trim() === categoria!.toLowerCase().trim()).slice(0, 4));
       })
       .catch(() => setProduct(null))
       .finally(() => setLoading(false));
   }, [id]);
 
   const handleAddToCart = () => {
+    if (!product) return;
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
+    }
     setAddedToCart(true);
+    setCartOpen(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
+
+  const progress = product ? Math.min(100, Math.round((product.cant_pedida / product.cantidad_minima) * 100)) : 0;
+  const isCompleted = product ? product.cant_pedida >= product.cantidad_minima : false;
 
   if (loading) {
     return (
@@ -83,7 +95,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
           <div className="flex items-center justify-center">
             <div
-              className="rounded-2xl overflow-hidden  flex items-center justify-center !p-10 !md:h-96"
+              className="rounded-2xl overflow-hidden flex items-center justify-center !p-10 !md:h-96"
               style={{
                 background: 'rgba(255, 255, 255, 0.04)',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -112,16 +124,33 @@ export default function ProductDetailPage() {
               <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
                 {product.nombre}
               </h1>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-5 h-5 ${i < (product.rating ?? 0) ? 'text-amber fill-amber' : 'text-white/20'}`}
-                    />
-                  ))}
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="flex items-center gap-1 text-slate">
+                    <Users className="w-4 h-4" />
+                    Progreso de importación
+                  </span>
+                  <span className="font-semibold" style={{ color: isCompleted ? '#22C55E' : progress >= 75 ? '#F59E0B' : '#94A3B8' }}>
+                    {isCompleted ? '¡Completado!' : `${progress}%`}
+                  </span>
                 </div>
-                <span className="text-slate text-sm">({product.reviews ?? 0} reseñas)</span>
+                <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.08)' }}>
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.min(100, progress)}%`,
+                      background: isCompleted
+                        ? 'linear-gradient(90deg, #22C55E, #16A34A)'
+                        : progress >= 75
+                          ? 'linear-gradient(90deg, #F59E0B, #D97706)'
+                          : 'linear-gradient(90deg, #3B82F6, #2563EB)',
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-slate">
+                  {product.cant_pedida} de {product.cantidad_minima} unidades pedidas (mínimo para importar)
+                </p>
               </div>
             </div>
 
@@ -143,8 +172,9 @@ export default function ProductDetailPage() {
               <h3 className="text-lg font-bold text-white">Características</h3>
               <ul className="space-y-2">
                 {[
-                  `Cantidad mínima: ${product.cantidad_minima} unidad(es)`,
-                  `Cantidad máxima: ${product.cantidad_maxima} unidad(es)`,
+                  `Cantidad mínima para importar: ${product.cantidad_minima}`,
+                  `Cantidad máxima: ${product.cantidad_maxima}`,
+                  `Pedido actual: ${product.cant_pedida} unidades`,
                   'Envío gratis a todo el país',
                   'Garantía de 30 días',
                   'Pago seguro con SSL',
@@ -169,14 +199,14 @@ export default function ProductDetailPage() {
                 </button>
                 <span className="text-lg font-bold text-white w-8 text-center">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(Math.min(product.cantidad_maxima, quantity + 1))}
+                  onClick={() => setQuantity(Math.min(product.cantidad_maxima - product.cant_pedida, quantity + 1))}
                   className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-300 hover:bg-white/10"
                   style={{ border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 >
                   <Plus className="w-4 h-4 text-white" />
                 </button>
               </div>
-              <span className="text-xs text-slate">Máx: {product.cantidad_maxima}</span>
+              <span className="text-xs text-slate">Disponible: {product.cantidad_maxima - product.cant_pedida}</span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
@@ -186,7 +216,14 @@ export default function ProductDetailPage() {
                 style={{ boxShadow: '0 8px 25px rgba(245, 158, 11, 0.3)' }}
               >
                 <ShoppingCart className="w-6 h-6" />
-                {addedToCart ? '✓ Agregado' : 'Agregar al Carrito'}
+                {addedToCart ? '✓ Agregado al carrito' : 'Agregar al Carrito'}
+              </button>
+              <button
+                className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold transition-all duration-300 text-white"
+                style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
+              >
+                <Share2 className="w-5 h-5" />
+                Compartir
               </button>
             </div>
 
@@ -216,7 +253,7 @@ export default function ProductDetailPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-15">
               {similar.map((p: Product) => (
-                <ProductCard key={p.id} product={p} onAddToCart={() => {}} />
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </section>

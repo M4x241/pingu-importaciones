@@ -27,7 +27,9 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await register({ nombres: form.nombres, apellidos: form.apellidos, email: form.email, password: form.password, role: form.role });
-      navigate('/dashboard');
+      const stored = localStorage.getItem('user');
+      const u = stored ? JSON.parse(stored) : null;
+      navigate(u?.role === 'empresa' ? '/business' : u?.role === 'cliente' ? '/client' : '/');
     } catch (err: any) {
       setError(err.message || 'Error al registrarse');
     } finally {
