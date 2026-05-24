@@ -6,16 +6,12 @@ import axios from 'axios';
 export class AppService {
   private readonly logger = new Logger(AppService.name);
 
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
     this.logger.debug('Ping de mantenimiento enviado...');
 
     try {
-      const url = 'https://pingu-importaciones.onrender.com/health';
+      const url = 'https://pingu-importaciones.onrender.com/api/health';
       await axios.get(url);
     } catch (error) {
       this.logger.error('Error en el ping:', error.message);
