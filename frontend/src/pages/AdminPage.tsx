@@ -60,7 +60,7 @@ export default function AdminPage() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300"
+                className="w-full flex items-center gap-3 !px-4 !py-3 rounded-xl text-sm font-medium transition-all duration-300"
                 style={{
                   background: activeTab === item.id ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
                   color: activeTab === item.id ? '#FCD34D' : 'rgba(203, 213, 225, 0.7)',

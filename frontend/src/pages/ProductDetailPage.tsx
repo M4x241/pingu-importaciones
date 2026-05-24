@@ -70,8 +70,8 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="min-h-screen pt-16">
-      <div className="w-full mx-auto px-6 py-8 md:py-12 space-y-12">
+    <div className="min-h-screen !pt-24">
+      <div className="w-full mx-auto !px-6 !py-8 !md:py-12 !space-y-12">
         <Link
           to="/tienda"
           className="inline-flex items-center gap-2 text-sm text-slate hover:text-amber transition-colors"
@@ -81,16 +81,16 @@ export default function ProductDetailPage() {
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-          <div className="relative">
+          <div className="flex items-center justify-center">
             <div
-              className="rounded-2xl overflow-hidden aspect-square flex items-center justify-center"
+              className="rounded-2xl overflow-hidden  flex items-center justify-center !p-10 !md:h-96"
               style={{
                 background: 'rgba(255, 255, 255, 0.04)',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
               }}
             >
               {product.imagen_url ? (
-                <img src={product.imagen_url} alt={product.nombre} className="w-full h-full object-cover" />
+                <img src={product.imagen_url} alt={product.nombre} className="w-50% h-50% object-cover" />
               ) : (
                 <span className="text-8xl">{emojis[product.categoria ?? ''] || '📦'}</span>
               )}
@@ -104,17 +104,6 @@ export default function ProductDetailPage() {
                 {product.badge}
               </span>
             )}
-
-            <button
-              onClick={() => setIsWished(!isWished)}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300"
-              style={{
-                background: isWished ? 'rgba(245, 158, 11, 0.2)' : 'rgba(0, 0, 0, 0.4)',
-                backdropFilter: 'blur(4px)',
-              }}
-            >
-              <Heart className={`w-5 h-5 ${isWished ? 'text-amber fill-amber' : 'text-white'}`} />
-            </button>
           </div>
 
           <div className="space-y-6">
@@ -193,30 +182,23 @@ export default function ProductDetailPage() {
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 flex items-center justify-center gap-3 bg-amber hover:bg-amber-dark text-oxford font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] text-lg"
+                className="flex-1 flex items-center justify-center gap-3 bg-amber hover:bg-amber-dark text-oxford font-bold !px-8 !py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] text-lg"
                 style={{ boxShadow: '0 8px 25px rgba(245, 158, 11, 0.3)' }}
               >
                 <ShoppingCart className="w-6 h-6" />
                 {addedToCart ? '✓ Agregado' : 'Agregar al Carrito'}
               </button>
-              <button
-                className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold transition-all duration-300 text-white"
-                style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
-              >
-                <Share2 className="w-5 h-5" />
-                Compartir
-              </button>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 pt-2">
+            <div className="grid grid-cols-3 gap-4 !pt-2">
               {[
                 { icon: Truck, text: 'Envío Gratis', sub: 'En todos los pedidos' },
                 { icon: Shield, text: 'Pago Seguro', sub: 'SSL encriptado' },
                 { icon: ShoppingCart, text: 'Devolución', sub: '30 días gratis' },
               ].map((item, i) => (
-                <div key={i} className="text-center p-3 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
+                <div key={i} className="text-center !p-3 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
                   <item.icon className="w-5 h-5 text-amber mx-auto mb-1" />
-                  <p className="text-xs font-semibold text-white">{item.text}</p>
+                  <p className="text-xl font-semibold text-white">{item.text}</p>
                   <p className="text-xs text-slate/50">{item.sub}</p>
                 </div>
               ))}
@@ -225,14 +207,14 @@ export default function ProductDetailPage() {
         </div>
 
         {similar.length > 0 && (
-          <section className="pt-8 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
-            <div className="text-center mb-10 space-y-3">
+          <section className="!pt-8 border-t !p-24" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
+            <div className="!mb-10 space-y-3">
               <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
                 Productos <span className="text-amber">Similares</span>
               </h2>
               <p className="text-slate">Descubre más productos en la misma categoría</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-15">
               {similar.map((p: Product) => (
                 <ProductCard key={p.id} product={p} onAddToCart={() => {}} />
               ))}

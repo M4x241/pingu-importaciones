@@ -37,13 +37,13 @@ export default function BusinessPage() {
     <div style={{ backgroundColor: '#0F172A', minHeight: '100vh' }}>
       <div className="flex">
         <aside
-          className="w-64 min-h-screen hidden lg:block p-4"
+          className="w-64 min-h-screen hidden lg:block !p-4"
           style={{
             background: 'rgba(255, 255, 255, 0.03)',
             borderRight: '1px solid rgba(255, 255, 255, 0.06)',
           }}
         >
-          <Link to="/" className="flex items-center gap-2 px-4 py-6 mb-4">
+          <Link to="/" className="flex items-center gap-2 !px-4 !py-6 mb-4">
             <span className="text-2xl">🐧</span>
             <span className="text-lg font-bold text-white">
               Pingu <span className="text-amber">Empresas</span>
@@ -55,7 +55,7 @@ export default function BusinessPage() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300"
+                className="w-full flex items-center gap-3 !px-4 !py-3 rounded-xl text-lg font-medium transition-all duration-300"
                 style={{
                   background: activeTab === item.id ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
                   color: activeTab === item.id ? '#FCD34D' : 'rgba(203, 213, 225, 0.7)',
@@ -67,20 +67,20 @@ export default function BusinessPage() {
             ))}
           </div>
 
-          <div className="mt-auto pt-8">
+          <div className="mt-auto !pt-8">
             <Link
               to="/"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-slate hover:text-white transition-colors"
+              className="flex items-center gap-3 !px-4 !py-3 rounded-xl text-sm text-slate hover:text-white transition-colors"
             >
               ← Volver al Sitio
             </Link>
           </div>
         </aside>
 
-        <div className="flex-1 p-6 lg:p-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+        <div className="flex-1 !p-6 lg:p-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 !mb-10">
             <div>
-              <h1 className="text-2xl font-extrabold text-white">
+              <h1 className="text-4xl font-extrabold text-white">
                 Panel de Empresa
               </h1>
               <p className="text-slate text-sm">Gestiona tus productos y grupos de importación</p>
@@ -92,11 +92,11 @@ export default function BusinessPage() {
                 <input
                   type="text"
                   placeholder="Buscar producto..."
-                  className="pl-10 pr-4 py-2.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50 w-full sm:w-56"
+                  className="!pl-10 !pr-4 !py-2.5 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-2 focus:ring-amber/50 w-full sm:w-56"
                   style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
                 />
               </div>
-              <button className="flex items-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-semibold px-5 py-2.5 rounded-xl transition-all duration-300 text-sm whitespace-nowrap">
+              <button className="flex items-center gap-2 bg-amber hover:bg-amber-dark text-oxford font-semibold !px-5 !py-2.5 rounded-xl transition-all duration-300 text-sm whitespace-nowrap">
                 <Plus className="w-4 h-4" />
                 Nuevo Producto
               </button>
@@ -104,12 +104,12 @@ export default function BusinessPage() {
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-20">
+            <div className="flex justify-center !py-20">
               <div className="w-10 h-10 border-2 border-amber border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 !mb-8">
                 {[
                   { icon: DollarSign, label: 'Ventas del Mes', value: '$0', change: '—', color: '#22C55E' },
                   { icon: Package, label: 'Productos', value: String(productos.length), change: '—', color: '#3B82F6' },
@@ -118,7 +118,7 @@ export default function BusinessPage() {
                 ].map((stat, i) => (
                   <div
                     key={i}
-                    className="rounded-2xl p-5 space-y-3"
+                    className="rounded-2xl !p-5 space-y-3"
                     style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
                   >
                     <div className="flex items-center justify-between">
@@ -131,26 +131,26 @@ export default function BusinessPage() {
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 !mb-8">
                 <div
-                  className="rounded-2xl p-6"
+                  className="rounded-2xl !p-6"
                   style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
                 >
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between !mb-4">
                     <h3 className="text-lg font-bold text-white">Grupos de Importación</h3>
                     <button className="flex items-center gap-1 text-sm text-amber hover:text-amber-light transition-colors">
                       <Plus className="w-4 h-4" />
                       Nuevo Grupo
                     </button>
                   </div>
-                  <div className="space-y-4">
+                  <div className="!space-y-4">
                     {catalogos.length === 0 ? (
                       <p className="text-slate text-sm">No hay catálogos activos.</p>
                     ) : (
                       catalogos.map((cat) => {
                         const progress = Math.min(Math.round(Math.random() * 100), 100);
                         return (
-                          <div key={cat.id} className="space-y-2 p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
+                          <div key={cat.id} className="space-y-2 !p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)' }}>
                             <div className="flex items-center justify-between">
                               <span className="text-sm font-semibold text-white">{cat.titulo}</span>
                               <span className="text-xs text-slate">{cat.estado}</span>
@@ -178,10 +178,10 @@ export default function BusinessPage() {
                 </div>
 
                 <div
-                  className="rounded-2xl p-6"
+                  className="rounded-2xl !p-6"
                   style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
                 >
-                  <h3 className="text-lg font-bold text-white mb-4">Acciones Rápidas</h3>
+                  <h3 className="text-lg font-bold text-white !mb-4">Acciones Rápidas</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {[
                       { icon: Plus, label: 'Agregar Producto', desc: 'Nuevo al catálogo', color: '#F59E0B' },
@@ -191,7 +191,7 @@ export default function BusinessPage() {
                     ].map((action, i) => (
                       <button
                         key={i}
-                        className="flex flex-col items-center justify-center gap-2 p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.02] hover:border-amber/30"
+                        className="flex flex-col items-center justify-center gap-2 !p-5 rounded-xl text-center transition-all duration-300 hover:scale-[1.02] hover:border-amber/30"
                         style={{
                           background: 'rgba(255, 255, 255, 0.03)',
                           border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -212,10 +212,10 @@ export default function BusinessPage() {
               </div>
 
               <div
-                className="rounded-2xl p-6"
+                className="rounded-2xl !p-6"
                 style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
               >
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between !mb-6">
                   <h3 className="text-lg font-bold text-white">Mis Productos</h3>
                   <button className="flex items-center gap-1 text-sm text-amber hover:text-amber-light transition-colors">
                     <Plus className="w-4 h-4" />
@@ -236,15 +236,15 @@ export default function BusinessPage() {
                     <tbody>
                       {productos.length === 0 ? (
                         <tr>
-                          <td colSpan={5} className="py-8 text-center text-slate">No hay productos registrados.</td>
+                          <td colSpan={5} className="!py-8 text-center text-slate">No hay productos registrados.</td>
                         </tr>
                       ) : (
                         productos.map((product) => (
                           <tr key={product.id} className="border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}>
-                            <td className="py-4 text-white font-medium">{product.nombre}</td>
-                            <td className="py-4 text-amber font-bold">${Number(product.precio).toFixed(2)}</td>
-                            <td className="py-4 text-slate hidden md:table-cell">ID: {product.catalogo_id}</td>
-                            <td className="py-4">
+                            <td className="!py-4 text-white font-medium">{product.nombre}</td>
+                            <td className="!py-4 text-amber font-bold">${Number(product.precio).toFixed(2)}</td>
+                            <td className="!py-4 text-slate hidden md:table-cell">ID: {product.catalogo_id}</td>
+                            <td className="!py-4">
                               <span
                                 className="text-xs font-semibold px-3 py-1 rounded-full"
                                 style={{
@@ -255,7 +255,7 @@ export default function BusinessPage() {
                                 Activo
                               </span>
                             </td>
-                            <td className="py-4">
+                            <td className="!py-4">
                               <div className="flex items-center gap-2">
                                 <button className="p-2 rounded-lg text-slate hover:text-amber hover:bg-white/5 transition-all">
                                   <Eye className="w-4 h-4" />
