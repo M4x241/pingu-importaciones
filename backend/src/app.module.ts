@@ -21,12 +21,13 @@ import { ReservacionesModule } from './modules/reservaciones/reservaciones.modul
 import { DetalleReservacionModule } from './modules/detalle-reservacion/detalle-reservacion.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PayPalModule } from './modules/paypal/paypal.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, ScheduleModule.forRoot()],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
