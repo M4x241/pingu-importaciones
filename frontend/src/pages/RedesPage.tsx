@@ -5,14 +5,14 @@ const socials = [
   {
     name: "Instagram",
     icon: "📸",
-    url: "#",
+    url: "https://www.instagram.com/pingu_importaciones/",
     color: "#E4405F",
-    username: "@pingu.importaciones",
+    username: "@pingu_importaciones",
   },
   {
     name: "Facebook",
     icon: "👍",
-    url: "#",
+    url: "https://www.facebook.com/profile.php?id=61590618119211",
     color: "#1877F2",
     username: "Pingu Importaciones",
   },
@@ -21,7 +21,7 @@ const socials = [
     icon: "🎵",
     url: "#",
     color: "#000000",
-    username: "@pingu.importaciones",
+    username: "@pingu_importaciones",
   },
   {
     name: "YouTube",
