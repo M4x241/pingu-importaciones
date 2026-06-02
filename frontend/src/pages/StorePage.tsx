@@ -104,7 +104,7 @@ export default function StorePage() {
 
       <section
         id="productos"
-        className="!py-16 md:py-20 !px-60"
+        className="!py-16 md:py-20 !px-4 sm:!px-8 md:!px-16 lg:!px-32 xl:!px-60"
         style={{
           background: "linear-gradient(0deg, #0F172A 0%, #0B0F19 100%)",
         }}
