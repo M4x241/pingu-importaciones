@@ -1,13 +1,14 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { ShoppingBag, ArrowLeft, Shield, Truck, Building2, CheckCircle, Package } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Shield, Truck, Building2, CheckCircle, Package, CreditCard } from 'lucide-react';
 import { reservacionesService } from '../services/reservaciones';
 import { catalogosService } from '../services/catalogos';
 import { empresasService } from '../services/empresas';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import type { CartItem, Catalogo, Empresa } from '../types';
+import PayPalButton from '../components/payment/PayPalButton';
+import type { CartItem, Catalogo, Empresa, PaymentResult } from '../types';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -69,33 +70,54 @@ export default function CheckoutPage() {
   const subtotal = items.reduce((sum, item) => sum + Number(item.precio) * item.quantity, 0);
   const total = subtotal;
 
+  const createReservation = useCallback(async () => {
+    if (!user) return;
+    const codigo = 'PING-' + Date.now();
+    const res = await reservacionesService.create({
+      user_id: user.id,
+      codigo_unico: codigo,
+      estado: 'reservado',
+    });
+    for (const item of items) {
+      await api.post('/api/detalle-reservacion', {
+        reservacion_id: res.id,
+        product_id: item.id,
+        cantidad_pedida: item.quantity,
+        precio_unitario: item.precio,
+      });
+    }
+    setResCodigo(codigo);
+    clearCart();
+    setDone(true);
+    setStep(3);
+  }, [user, items, clearCart]);
+
   const handlePay = async () => {
     if (!user || creating) return;
     setCreating(true);
     try {
-      const codigo = 'PING-' + Date.now();
-      const res = await reservacionesService.create({
-        user_id: user.id,
-        codigo_unico: codigo,
-        estado: 'reservado',
-      });
-      for (const item of items) {
-        await api.post('/api/detalle-reservacion', {
-          reservacion_id: res.id,
-          product_id: item.id,
-          cantidad_pedida: item.quantity,
-          precio_unitario: item.precio,
-        });
-      }
-      setResCodigo(codigo);
-      clearCart();
-      setDone(true);
-      setStep(3);
+      await createReservation();
     } catch (e) {
       console.error('Error creating reservation:', e);
     } finally {
       setCreating(false);
     }
+  };
+
+  const handlePayPalSuccess = async (_result: PaymentResult) => {
+    if (!user || creating) return;
+    setCreating(true);
+    try {
+      await createReservation();
+    } catch (e) {
+      console.error('Error creating reservation after PayPal:', e);
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handlePayPalError = (error: string) => {
+    console.error('PayPal error:', error);
   };
 
   if (!isAuthenticated) return null;
@@ -298,7 +320,43 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className="!space-y-3">
+                <div className="!space-y-4">
+                  <div className="!space-y-3">
+                    <p className="text-xs font-semibold text-slate uppercase tracking-wider flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-amber" />
+                      Paga con PayPal
+                    </p>
+                    {creating ? (
+                      <div
+                        className="!p-4 rounded-xl text-sm font-medium text-amber text-center"
+                        style={{
+                          background: "rgba(245, 158, 11, 0.1)",
+                          border: "1px solid rgba(245, 158, 11, 0.2)",
+                        }}
+                      >
+                        Procesando tu pago y creando reservacion...
+                      </div>
+                    ) : (
+                      <PayPalButton
+                        items={items}
+                        total={total}
+                        onSuccess={handlePayPalSuccess}
+                        onError={handlePayPalError}
+                      />
+                    )}
+                  </div>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }} />
+                    </div>
+                    <div className="relative flex justify-center text-xs">
+                      <span className="px-3" style={{ backgroundColor: "#0F172A", color: "rgba(203, 213, 225, 0.5)" }}>
+                        O paga directamente
+                      </span>
+                    </div>
+                  </div>
+
                   <button
                     onClick={handlePay}
                     disabled={creating || done}
@@ -307,18 +365,6 @@ export default function CheckoutPage() {
                   >
                     {creating ? "Procesando..." : "Pagar $" + total.toFixed(2)}
                   </button>
-
-                  {creating && (
-                    <div
-                      className="!p-4 rounded-xl text-sm font-medium text-amber text-center"
-                      style={{
-                        background: "rgba(245, 158, 11, 0.1)",
-                        border: "1px solid rgba(245, 158, 11, 0.2)",
-                      }}
-                    >
-                      Creando tu reservacion...
-                    </div>
-                  )}
                 </div>
 
                 <div className="flex items-center gap-2 !pt-2 text-xs text-slate">

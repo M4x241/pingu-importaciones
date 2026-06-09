@@ -25,14 +25,14 @@ export const paypalService = {
   },
 
   async createOrder(data: CreateOrderPayload): Promise<PayPalOrderResponse> {
-    return api.post<PayPalOrderResponse>('/paypal/create-order', data);
+    return api.post<PayPalOrderResponse>('/api/paypal/create-order', data);
   },
 
   async captureOrder(orderId: string): Promise<PaymentResult> {
-    return api.post<PaymentResult>('/paypal/capture-order', { orderId });
+    return api.post<PaymentResult>('/api/paypal/capture-order', { orderId });
   },
 
   async cancelOrder(orderId: string): Promise<void> {
-    return api.post<void>('/paypal/cancel-order', { orderId });
+    return api.post<void>('/api/paypal/cancel-order', { orderId });
   },
 };
