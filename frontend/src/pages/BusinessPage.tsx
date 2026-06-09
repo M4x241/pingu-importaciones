@@ -54,6 +54,8 @@ export default function BusinessPage() {
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [editForm, setEditForm] = useState({ nombre: '', descripcion: '', precio: '', cantidad_minima: '', cantidad_maxima: '', categoria: '', imagen_url: '', catalogo_id: '' });
   const [editLoading, setEditLoading] = useState(false);
+  const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const empresaId = user?.empresas?.[0]?.id;
 
@@ -196,6 +198,24 @@ export default function BusinessPage() {
       console.error('Error updating product:', e);
     } finally {
       setEditLoading(false);
+    }
+  };
+
+  const handleDeleteProduct = async () => {
+    if (!deleteProduct) return;
+    setDeleteLoading(true);
+    try {
+      await productosService.delete(deleteProduct.id);
+      const updated = await productosService.getAll(undefined, empresaId);
+      setProductos(updated);
+      if (selectedCatalogo) {
+        setCatalogoProductos(updated.filter((p) => p.catalogo_id === selectedCatalogo.id));
+      }
+      setDeleteProduct(null);
+    } catch (e) {
+      console.error('Error deleting product:', e);
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -385,7 +405,10 @@ export default function BusinessPage() {
                             </span>
                           </td>
                           <td className="py-4">
-                            <button onClick={() => openEditModal(p)} className="p-2 rounded-lg text-slate hover:text-blue-400 hover:bg-white/5 transition-all"><Edit className="w-4 h-4" /></button>
+                            <div className="flex items-center gap-2">
+                              <button onClick={() => openEditModal(p)} className="p-2 rounded-lg text-slate hover:text-blue-400 hover:bg-white/5 transition-all"><Edit className="w-4 h-4" /></button>
+                              <button onClick={() => setDeleteProduct(p)} className="p-2 rounded-lg text-slate hover:text-red-400 hover:bg-white/5 transition-all"><Trash2 className="w-4 h-4" /></button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -436,7 +459,7 @@ export default function BusinessPage() {
                         <td className="!py-4">
                           <div className="flex items-center gap-2">
                             <button onClick={() => openEditModal(product)} className="p-2 rounded-lg text-slate hover:text-blue-400 hover:bg-white/5 transition-all"><Edit className="w-4 h-4" /></button>
-                            <button className="p-2 rounded-lg text-slate hover:text-red-400 hover:bg-white/5 transition-all"><Trash2 className="w-4 h-4" /></button>
+                            <button onClick={() => setDeleteProduct(product)} className="p-2 rounded-lg text-slate hover:text-red-400 hover:bg-white/5 transition-all"><Trash2 className="w-4 h-4" /></button>
                           </div>
                         </td>
                       </tr>
@@ -727,7 +750,32 @@ export default function BusinessPage() {
                 {newCatalogoLoading ? 'Creando...' : 'Crear Catalogo'}
               </button>
               <button onClick={resetNewCatalogo}
-                className="text-slate hover:text-white !px-6 !py-3 rounded-xl transition-all" style={{ border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                className="text-slate hover:text-white !px-6 !py-3 rounded-xl transition-all" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center !p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
+          <div className="rounded-2xl !p-6 w-full max-w-md !space-y-4 text-center" style={{ background: '#0F172A', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'rgba(239, 68, 68, 0.1)' }}>
+              <Trash2 className="w-8 h-8 text-red-400" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Eliminar Producto</h3>
+            <p className="text-slate text-sm">
+              Estas seguro de eliminar <span className="text-white font-semibold">{deleteProduct.nombre}</span>?<br />
+              Esta accion no se puede deshacer.
+            </p>
+            <div className="flex gap-3 justify-center !pt-2">
+              <button onClick={handleDeleteProduct} disabled={deleteLoading}
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold !px-6 !py-3 rounded-xl transition-all disabled:opacity-50">
+                {deleteLoading ? 'Eliminando...' : 'Si, Eliminar'}
+              </button>
+              <button onClick={() => setDeleteProduct(null)}
+                className="text-slate hover:text-white !px-6 !py-3 rounded-xl transition-all" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
                 Cancelar
               </button>
             </div>
