@@ -150,8 +150,8 @@ export default function MessagePage() {
                   label: "Email",
                   value: "info@pinguimportaciones.com",
                 },
-                { icon: Phone, label: "Telefono", value: "+57 300 123 4567" },
-                { icon: MapPin, label: "Ubicacion", value: "Bogota, Colombia" },
+                { icon: Phone, label: "Telefono", value: "+591 74431122" },
+                { icon: MapPin, label: "Ubicacion", value: "Sucre, Bolivia" },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-4">
                   <div

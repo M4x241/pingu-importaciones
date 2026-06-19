@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Package, BarChart3, Settings, ShoppingBag, Users, Plus, Search,
-  TrendingUp, DollarSign, Edit, Trash2, LogOut, X,
+  TrendingUp, DollarSign, Edit, Trash2, LogOut, X, AlertTriangle,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -10,6 +10,7 @@ import { productosService } from '../services/productos';
 import { empresasService } from '../services/empresas';
 import { catalogosService } from '../services/catalogos';
 import { reservacionesService, type ReservacionConDetalles } from '../services/reservaciones';
+import { usersService } from '../services/users';
 import { api } from '../services/api';
 import type { Product, Empresa, Catalogo, Categoria } from '../types';
 
@@ -56,6 +57,21 @@ export default function BusinessPage() {
   const [editLoading, setEditLoading] = useState(false);
   const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteCatalogo, setDeleteCatalogo] = useState<Catalogo | null>(null);
+  const [deleteCatalogoLoading, setDeleteCatalogoLoading] = useState(false);
+  const [profileForm, setProfileForm] = useState({ nombres: '', apellidos: '', email: '', password: '' });
+  const [profileSaving, setProfileSaving] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setProfileForm({
+        nombres: user.nombres || '',
+        apellidos: user.apellidos || '',
+        email: user.email || '',
+        password: '',
+      });
+    }
+  }, [user]);
 
   const empresaId = user?.empresas?.[0]?.id;
 
@@ -139,7 +155,11 @@ export default function BusinessPage() {
   };
 
   const handleCreateCatalogo = async () => {
-    if (!newCatalogo.titulo || !empresaId) return;
+    if (!newCatalogo.titulo) return;
+    if (!empresaId) {
+      toast('No tienes una empresa asignada. Contacta al administrador.');
+      return;
+    }
     setNewCatalogoLoading(true);
     try {
       await catalogosService.create({
@@ -216,6 +236,49 @@ export default function BusinessPage() {
       console.error('Error deleting product:', e);
     } finally {
       setDeleteLoading(false);
+    }
+  };
+
+  const handleDeleteCatalogo = async () => {
+    if (!deleteCatalogo) return;
+    setDeleteCatalogoLoading(true);
+    try {
+      await catalogosService.delete(deleteCatalogo.id);
+      const updated = await catalogosService.getAll(empresaId);
+      setCatalogos(updated);
+      if (selectedCatalogo?.id === deleteCatalogo.id) {
+        setSelectedCatalogo(null);
+        setCatalogoProductos([]);
+      }
+      setDeleteCatalogo(null);
+      toast('Catalogo eliminado', 'success');
+    } catch (e) {
+      toast('Error al eliminar catalogo');
+      console.error('Error deleting catalogo:', e);
+    } finally {
+      setDeleteCatalogoLoading(false);
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user || !user.id) return;
+    setProfileSaving(true);
+    try {
+      const data: any = {
+        nombres: profileForm.nombres,
+        apellidos: profileForm.apellidos,
+        email: profileForm.email,
+      };
+      if (profileForm.password) data.password = profileForm.password;
+      await usersService.updateProfile(user.id, data);
+      const updated = { ...user, nombres: profileForm.nombres, apellidos: profileForm.apellidos, email: profileForm.email };
+      localStorage.setItem('user', JSON.stringify(updated));
+      toast('Perfil actualizado', 'success');
+    } catch (e) {
+      toast('Error al actualizar perfil');
+      console.error('Error updating profile:', e);
+    } finally {
+      setProfileSaving(false);
     }
   };
 
@@ -342,15 +405,31 @@ export default function BusinessPage() {
               </div>
               <div className="!space-y-2">
                 {catalogos.map((cat) => (
-                  <button key={cat.id} onClick={() => loadCatalogoProductos(cat)}
-                    className="w-full text-left !p-3 rounded-xl transition-all"
-                    style={{
-                      background: selectedCatalogo?.id === cat.id ? 'rgba(245, 158, 11, 0.1)' : 'rgba(255, 255, 255, 0.03)',
-                      border: selectedCatalogo?.id === cat.id ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid transparent',
-                    }}>
-                    <p className="text-sm font-semibold text-white">{cat.titulo}</p>
-                    <p className="text-xs text-slate">{cat.descripcion.slice(0, 50)}</p>
-                  </button>
+                  <div key={cat.id} className="flex items-center gap-1">
+                    <button onClick={() => loadCatalogoProductos(cat)}
+                      className="flex-1 text-left !p-3 rounded-xl transition-all"
+                      style={{
+                        background: selectedCatalogo?.id === cat.id ? 'rgba(245, 158, 11, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                        border: selectedCatalogo?.id === cat.id ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid transparent',
+                      }}>
+                      <p className="text-sm font-semibold text-white">{cat.titulo}</p>
+                      <p className="text-xs text-slate">{cat.descripcion.slice(0, 50)}</p>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (cat.productos && cat.productos.length > 0) {
+                          toast('No se puede eliminar: el catalogo tiene productos');
+                          return;
+                        }
+                        setDeleteCatalogo(cat);
+                      }}
+                      className="!p-2 rounded-lg text-slate hover:text-red-400 hover:bg-white/5 transition-all"
+                      title="Eliminar catalogo"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -533,6 +612,46 @@ export default function BusinessPage() {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        );
+
+      case 'configuracion':
+        return (
+          <div className="!max-w-2xl !mx-auto">
+            <div className="!rounded-2xl !p-8" style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <h3 className="!text-xl !font-bold !text-white !mb-6">Configuracion del Perfil</h3>
+              <div className="!space-y-5">
+                <div>
+                  <label className="!block !text-xs !font-semibold !text-slate !mb-1.5 !uppercase !tracking-wider">Nombres</label>
+                  <input value={profileForm.nombres} onChange={(e) => setProfileForm({ ...profileForm, nombres: e.target.value })}
+                    className="!w-full !px-4 !py-3 !rounded-xl !text-sm !text-white !outline-none focus:!ring-2 focus:!ring-amber/50"
+                    style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }} />
+                </div>
+                <div>
+                  <label className="!block !text-xs !font-semibold !text-slate !mb-1.5 !uppercase !tracking-wider">Apellidos</label>
+                  <input value={profileForm.apellidos} onChange={(e) => setProfileForm({ ...profileForm, apellidos: e.target.value })}
+                    className="!w-full !px-4 !py-3 !rounded-xl !text-sm !text-white !outline-none focus:!ring-2 focus:!ring-amber/50"
+                    style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }} />
+                </div>
+                <div>
+                  <label className="!block !text-xs !font-semibold !text-slate !mb-1.5 !uppercase !tracking-wider">Email</label>
+                  <input type="email" value={profileForm.email} onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                    className="!w-full !px-4 !py-3 !rounded-xl !text-sm !text-white !outline-none focus:!ring-2 focus:!ring-amber/50"
+                    style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }} />
+                </div>
+                <hr className="!border-white/5" />
+                <div>
+                  <label className="!block !text-xs !font-semibold !text-slate !mb-1.5 !uppercase !tracking-wider">Nueva Contrasena (dejar vacio si no deseas cambiarla)</label>
+                  <input type="password" value={profileForm.password} onChange={(e) => setProfileForm({ ...profileForm, password: e.target.value })}
+                    className="!w-full !px-4 !py-3 !rounded-xl !text-sm !text-white !outline-none focus:!ring-2 focus:!ring-amber/50"
+                    style={{ background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.1)' }} />
+                </div>
+                <button onClick={handleSaveProfile} disabled={profileSaving}
+                  className="!bg-amber hover:!bg-amber-dark !text-oxford !font-bold !px-8 !py-3 !rounded-xl !transition-all disabled:!opacity-50">
+                  {profileSaving ? 'Guardando...' : 'Guardar Cambios'}
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -775,6 +894,31 @@ export default function BusinessPage() {
                 {deleteLoading ? 'Eliminando...' : 'Si, Eliminar'}
               </button>
               <button onClick={() => setDeleteProduct(null)}
+                className="text-slate hover:text-white !px-6 !py-3 rounded-xl transition-all" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteCatalogo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center !p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
+          <div className="rounded-2xl !p-6 w-full max-w-md !space-y-4 text-center" style={{ background: '#0F172A', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'rgba(239, 68, 68, 0.1)' }}>
+              <AlertTriangle className="w-8 h-8 text-red-400" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Eliminar Catalogo</h3>
+            <p className="text-slate text-sm">
+              Estas seguro de eliminar el catalogo <span className="text-white font-semibold">{deleteCatalogo.titulo}</span>?<br />
+              Esta accion no se puede deshacer.
+            </p>
+            <div className="flex gap-3 justify-center !pt-2">
+              <button onClick={handleDeleteCatalogo} disabled={deleteCatalogoLoading}
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold !px-6 !py-3 rounded-xl transition-all disabled:opacity-50">
+                {deleteCatalogoLoading ? 'Eliminando...' : 'Si, Eliminar'}
+              </button>
+              <button onClick={() => setDeleteCatalogo(null)}
                 className="text-slate hover:text-white !px-6 !py-3 rounded-xl transition-all" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
                 Cancelar
               </button>

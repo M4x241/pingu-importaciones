@@ -24,11 +24,11 @@ const socials = [
     username: "@pingu_importaciones",
   },
   {
-    name: "YouTube",
-    icon: "▶️",
-    url: "#",
-    color: "#FF0000",
-    username: "Pingu TV",
+    name: "WhatsApp",
+    icon: "💬",
+    url: "https://wa.me/59174431122",
+    color: "#25D366",
+    username: "+591 74431122",
   },
 ];
 

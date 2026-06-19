@@ -44,6 +44,7 @@ export interface Catalogo {
   fecha_creacion: string;
   estado: string;
   fecha_finalizacion: string;
+  productos?: Product[];
 }
 
 export interface Reservacion {

@@ -33,7 +33,7 @@ export class CatalogoController {
     return this.service.update(+id, data, user?.empresa_ids);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'empresa')
   @Delete(':id')
   remove(@Param('id') id: string, @CurrentUser() user: any) {
     return this.service.remove(+id, user?.empresa_ids);

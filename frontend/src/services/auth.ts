@@ -8,6 +8,7 @@ export interface LoginResponse {
     apellidos: string;
     email: string;
     role: string;
+    empresas?: any[];
   };
 }
 
@@ -25,4 +26,6 @@ export const authService = {
 
   register: (data: RegisterPayload) =>
     api.post<LoginResponse>('/api/auth/register', data),
+
+  getProfile: () => api.get<LoginResponse['user']>('/api/auth/profile'),
 };

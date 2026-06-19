@@ -19,10 +19,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
+    if (!token) return;
     const stored = localStorage.getItem('user');
-    if (token && stored) {
+    if (stored) {
       try { setUser(JSON.parse(stored)); } catch { /* ignore */ }
     }
+    authService.getProfile().then((profile) => {
+      const u: User = {
+        id: profile.id,
+        nombres: profile.nombres,
+        apellidos: profile.apellidos,
+        email: profile.email,
+        role: profile.role as User['role'],
+        empresas: profile.empresas || [],
+      };
+      localStorage.setItem('user', JSON.stringify(u));
+      setUser(u);
+    }).catch(() => {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+      setUser(null);
+    });
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
@@ -36,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         apellidos: res.user.apellidos,
         email: res.user.email,
         role: res.user.role as User['role'],
-        // empresas: res.user.empresas || [],
+        empresas: res.user.empresas || [],
       };
       localStorage.setItem('user', JSON.stringify(u));
       setUser(u);
@@ -63,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         apellidos: res.user.apellidos,
         email: res.user.email,
         role: res.user.role as User['role'],
-        // empresas: res.user.empresas || [],
+        empresas: res.user.empresas || [],
       };
       localStorage.setItem('user', JSON.stringify(u));
       setUser(u);

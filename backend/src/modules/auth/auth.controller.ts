@@ -1,6 +1,7 @@
-import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Controller('api/auth')
 export class AuthController {
@@ -18,5 +19,10 @@ export class AuthController {
   @Post('register')
   async register(@Body() data: { nombres: string; apellidos: string; email: string; password: string; role_id: number }) {
     return this.authService.register(data);
+  }
+
+  @Get('profile')
+  async getProfile(@CurrentUser() user: any) {
+    return this.authService.getProfile(user.id);
   }
 }

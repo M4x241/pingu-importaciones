@@ -38,6 +38,18 @@ export class AuthService {
     };
   }
 
+  async getProfile(userId: number) {
+    const user = await this.usersService.findOne(userId);
+    return {
+      id: user.id,
+      nombres: user.nombres,
+      apellidos: user.apellidos,
+      email: user.email,
+      role: user.role?.name || 'cliente',
+      empresas: user.empresas || [],
+    };
+  }
+
   async register(data: { nombres: string; apellidos: string; email: string; password: string; role_id: number }) {
     const existing = await this.usersService.findByEmail(data.email);
     if (existing) throw new ConflictException('El correo ya está registrado');

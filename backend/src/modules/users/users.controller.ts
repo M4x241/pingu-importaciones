@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Req, ForbiddenException } from '@nestjs/common';
+import * as crypto from 'crypto';
 import { UsersService } from './users.service';
 import { User } from '../../entities/user.entity';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -27,10 +28,27 @@ export class UsersController {
     return this.usersService.create(data);
   }
 
-  @Roles('admin')
   @Put(':id')
-  update(@Param('id') id: string, @Body() data: Partial<User>) {
-    return this.usersService.update(+id, data);
+  update(@Param('id') id: string, @Body() data: Partial<User> & { password?: string }, @Req() req: any) {
+    if (req.user?.role !== 'admin' && req.user?.id !== +id) {
+      throw new ForbiddenException('No puedes editar este perfil');
+    }
+    const allowed: Record<string, boolean> = {
+      nombres: true, apellidos: true, email: true, password: true,
+    };
+    if (req.user?.role === 'admin') {
+      allowed.role_id = true;
+    }
+    const filtered: any = {};
+    for (const key of Object.keys(data)) {
+      if (allowed[key]) {
+        filtered[key] = (data as any)[key];
+      }
+    }
+    if (filtered.password) {
+      filtered.password = crypto.createHash('sha256').update(filtered.password).digest('hex');
+    }
+    return this.usersService.update(+id, filtered);
   }
 
   @Roles('admin')
