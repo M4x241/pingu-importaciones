@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { ShoppingBag, ArrowLeft, Shield, Truck, Building2, CheckCircle, Package, CreditCard } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Shield, Truck, Building2, CheckCircle, Package, CreditCard, QrCode, Upload } from 'lucide-react';
 import { reservacionesService } from '../services/reservaciones';
 import { catalogosService } from '../services/catalogos';
 import { empresasService } from '../services/empresas';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import qrImage from '../assets/QR.jpeg';
 import PayPalButton from '../components/payment/PayPalButton';
 import type { CartItem, Catalogo, Empresa, PaymentResult } from '../types';
 
@@ -22,6 +23,8 @@ export default function CheckoutPage() {
   const [catalogos, setCatalogos] = useState<Catalogo[]>([]);
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [resCodigo, setResCodigo] = useState('');
+  const [metodoPago, setMetodoPago] = useState<'paypal' | 'qr' | 'direct'>('paypal');
+  const [comprobante, setComprobante] = useState<File | null>(null);
 
   const items: CartItem[] = (location.state as { items?: CartItem[] })?.items || [];
 
@@ -320,15 +323,55 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className="!space-y-4">
+                {/* SELECCION DE METODO DE PAGO */}
+                <div className="!space-y-3">
+                  <p className="!text-xs !font-semibold !text-slate !uppercase !tracking-wider !flex !items-center !gap-2">
+                    <CreditCard className="!w-4 !h-4 !text-amber" />
+                    Metodo de Pago
+                  </p>
+                  <div className="!grid !grid-cols-1 sm:!grid-cols-3 !gap-3">
+                    <button
+                      onClick={() => setMetodoPago('paypal')}
+                      className="!flex !items-center !gap-3 !p-4 !rounded-xl !border-2 !transition-all !duration-200"
+                      style={{
+                        background: metodoPago === 'paypal' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                        borderColor: metodoPago === 'paypal' ? '#F59E0B' : 'rgba(255, 255, 255, 0.06)',
+                      }}
+                    >
+                      <CreditCard className="!w-5 !h-5" style={{ color: metodoPago === 'paypal' ? '#F59E0B' : 'rgba(203, 213, 225, 0.5)' }} />
+                      <span className="!text-sm !font-semibold !text-white">PayPal</span>
+                    </button>
+                    <button
+                      onClick={() => setMetodoPago('qr')}
+                      className="!flex !items-center !gap-3 !p-4 !rounded-xl !border-2 !transition-all !duration-200"
+                      style={{
+                        background: metodoPago === 'qr' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                        borderColor: metodoPago === 'qr' ? '#F59E0B' : 'rgba(255, 255, 255, 0.06)',
+                      }}
+                    >
+                      <QrCode className="!w-5 !h-5" style={{ color: metodoPago === 'qr' ? '#F59E0B' : 'rgba(203, 213, 225, 0.5)' }} />
+                      <span className="!text-sm !font-semibold !text-white">Pago con QR</span>
+                    </button>
+                    <button
+                      onClick={() => setMetodoPago('direct')}
+                      className="!flex !items-center !gap-3 !p-4 !rounded-xl !border-2 !transition-all !duration-200"
+                      style={{
+                        background: metodoPago === 'direct' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                        borderColor: metodoPago === 'direct' ? '#F59E0B' : 'rgba(255, 255, 255, 0.06)',
+                      }}
+                    >
+                      <ShoppingBag className="!w-5 !h-5" style={{ color: metodoPago === 'direct' ? '#F59E0B' : 'rgba(203, 213, 225, 0.5)' }} />
+                      <span className="!text-sm !font-semibold !text-white">Contra Entrega</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* CONTENIDO SEGUN METODO */}
+                {metodoPago === 'paypal' && (
                   <div className="!space-y-3">
-                    <p className="text-xs font-semibold text-slate uppercase tracking-wider flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-amber" />
-                      Paga con PayPal
-                    </p>
                     {creating ? (
                       <div
-                        className="!p-4 rounded-xl text-sm font-medium text-amber text-center"
+                        className="!p-4 !rounded-xl !text-sm !font-medium !text-amber !text-center"
                         style={{
                           background: "rgba(245, 158, 11, 0.1)",
                           border: "1px solid rgba(245, 158, 11, 0.2)",
@@ -337,35 +380,120 @@ export default function CheckoutPage() {
                         Procesando tu pago y creando reservacion...
                       </div>
                     ) : (
-                      <PayPalButton
-                        items={items}
-                        total={total}
-                        onSuccess={handlePayPalSuccess}
-                        onError={handlePayPalError}
-                      />
+                      <div className="!w-full !max-w-lg !mx-auto !mt-4">
+                        <PayPalButton
+                          items={items}
+                          total={total}
+                          onSuccess={handlePayPalSuccess}
+                          onError={handlePayPalError}
+                        />
+                      </div>
                     )}
                   </div>
+                )}
 
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t" style={{ borderColor: "rgba(255,255,255,0.08)" }} />
+                {metodoPago === 'qr' && (
+                  <div className="!space-y-4">
+                    <div
+                      className="!rounded-2xl !p-6 !text-center"
+                      style={{
+                        background: "rgba(255, 255, 255, 0.03)",
+                        border: "1px solid rgba(255, 255, 255, 0.06)",
+                      }}
+                    >
+                      <p className="!text-sm !text-slate !mb-4">
+                        Escanea el codigo QR con tu app bancaria para realizar el pago
+                      </p>
+                      <img
+                        src={qrImage}
+                        alt="QR de pago"
+                        className="!w-48 !h-48 !mx-auto !rounded-xl !shadow-lg !mb-4"
+                        style={{ objectFit: 'contain' }}
+                      />
+                      <p className="!text-xs !text-slate">
+                        Banco: <span className="!text-white !font-semibold">BCP</span> — Titular:{" "}
+                        <span className="!text-white !font-semibold">Pingu Importaciones</span>
+                      </p>
+                      <p className="!text-xs !text-slate !mt-1">
+                        Monto: <span className="!text-amber !font-bold">${total.toFixed(2)}</span>
+                      </p>
                     </div>
-                    <div className="relative flex justify-center text-xs">
-                      <span className="px-3" style={{ backgroundColor: "#0F172A", color: "rgba(203, 213, 225, 0.5)" }}>
-                        O paga directamente
-                      </span>
+
+                    <div
+                      className="!rounded-2xl !p-6"
+                      style={{
+                        background: "rgba(255, 255, 255, 0.03)",
+                        border: "1px solid rgba(255, 255, 255, 0.06)",
+                      }}
+                    >
+                      <p className="!text-xs !font-semibold !text-slate !uppercase !tracking-wider !flex !items-center !gap-2 !mb-3">
+                        <Upload className="!w-4 !h-4 !text-amber" />
+                        Sube tu comprobante de pago
+                      </p>
+                      <label
+                        className="!flex !flex-col !items-center !justify-center !p-6 !rounded-xl !border-2 !border-dashed !cursor-pointer !transition-all !duration-200"
+                        style={{
+                          borderColor: comprobante ? '#F59E0B' : 'rgba(255, 255, 255, 0.1)',
+                          background: comprobante ? 'rgba(245, 158, 11, 0.05)' : 'rgba(255, 255, 255, 0.02)',
+                        }}
+                      >
+                        {comprobante ? (
+                          <div className="!text-center">
+                            <CheckCircle className="!w-8 !h-8 !text-green-500 !mx-auto !mb-2" />
+                            <p className="!text-sm !text-white !font-medium">{comprobante.name}</p>
+                            <p className="!text-xs !text-slate">{(comprobante.size / 1024).toFixed(1)} KB</p>
+                            <span className="!text-xs !text-amber hover:!underline !mt-2 !inline-block">Cambiar archivo</span>
+                          </div>
+                        ) : (
+                          <>
+                            <Upload className="!w-8 !h-8 !text-slate !mb-2" />
+                            <p className="!text-sm !text-slate">
+                              <span className="!text-amber hover:!underline">Haz clic</span> para seleccionar
+                            </p>
+                            <p className="!text-xs !text-slate/50 !mt-1">JPG, PNG o PDF</p>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept=".jpg,.jpeg,.png,.pdf"
+                          className="!hidden"
+                          onChange={(e) => setComprobante(e.target.files?.[0] || null)}
+                        />
+                      </label>
                     </div>
+
+                    <button
+                      onClick={handlePay}
+                      disabled={creating || done || !comprobante}
+                      className="!w-full !flex !items-center !justify-center !gap-2 !bg-amber hover:!bg-amber-dark !text-oxford !font-bold !py-4 !rounded-xl !transition-all !duration-300 hover:!scale-[1.02] !text-base disabled:!opacity-50"
+                      style={{ boxShadow: "0 4px 20px rgba(245, 158, 11, 0.3)" }}
+                    >
+                      {creating ? "Procesando..." : "Confirmar pago — $" + total.toFixed(2)}
+                    </button>
                   </div>
+                )}
 
-                  <button
-                    onClick={handlePay}
-                    disabled={creating || done}
-                    className="w-full flex items-center justify-center gap-2 !bg-amber hover:bg-amber-dark text-oxford font-bold !py-4 rounded-xl transition-all duration-300 hover:scale-[1.02] text-base disabled:opacity-50"
-                    style={{ boxShadow: "0 4px 20px rgba(245, 158, 11, 0.3)" }}
-                  >
-                    {creating ? "Procesando..." : "Pagar $" + total.toFixed(2)}
-                  </button>
-                </div>
+                {metodoPago === 'direct' && (
+                  <div className="!space-y-3">
+                    <div
+                      className="!p-4 !rounded-xl !text-sm !text-slate !text-center"
+                      style={{
+                        background: "rgba(255, 255, 255, 0.03)",
+                        border: "1px solid rgba(255, 255, 255, 0.06)",
+                      }}
+                    >
+                      Pagas cuando recibas el pedido. Sin cargos adicionales.
+                    </div>
+                    <button
+                      onClick={handlePay}
+                      disabled={creating || done}
+                      className="!w-full !flex !items-center !justify-center !gap-2 !bg-amber hover:!bg-amber-dark !text-oxford !font-bold !py-4 !rounded-xl !transition-all !duration-300 hover:!scale-[1.02] !text-base disabled:!opacity-50"
+                      style={{ boxShadow: "0 4px 20px rgba(245, 158, 11, 0.3)" }}
+                    >
+                      {creating ? "Procesando..." : "Pagar $" + total.toFixed(2)}
+                    </button>
+                  </div>
+                )}
 
                 <div className="flex items-center gap-2 !pt-2 text-xs text-slate">
                   <Shield className="w-4 h-4 text-green-400" />

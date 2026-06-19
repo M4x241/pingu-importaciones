@@ -17,13 +17,6 @@ const socials = [
     username: "Pingu Importaciones",
   },
   {
-    name: "TikTok",
-    icon: "🎵",
-    url: "#",
-    color: "#000000",
-    username: "@pingu_importaciones",
-  },
-  {
     name: "WhatsApp",
     icon: "💬",
     url: "https://wa.me/59174431122",
@@ -83,14 +76,14 @@ export default function RedesPage() {
           </p>
         </div>
 
-        <div className="!grid !grid-cols-1 md:!grid-cols-2 !gap-4 !w-full !mb-20">
+        <div className="!flex !flex-wrap !justify-center !gap-4 !w-full !mb-20">
           {socials.map((s) => (
             <Link
               key={s.name}
               to={s.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="!group !flex !items-center !justify-between !p-5 !rounded-2xl !transition-all !duration-300 hover:!scale-[1.02] !border"
+              className="!group !flex !items-center !justify-between !p-5 !rounded-2xl !transition-all !duration-300 hover:!scale-[1.02] !border !w-full md:!w-[calc(50%-0.5rem)]"
               style={{
                 background: "rgba(255, 255, 255, 0.03)",
                 borderColor: "rgba(255, 255, 255, 0.06)",
